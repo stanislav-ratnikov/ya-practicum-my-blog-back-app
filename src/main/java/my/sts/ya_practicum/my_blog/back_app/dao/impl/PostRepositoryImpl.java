@@ -3,9 +3,12 @@ package my.sts.ya_practicum.my_blog.back_app.dao.impl;
 import my.sts.ya_practicum.my_blog.back_app.dao.PostRepository;
 import my.sts.ya_practicum.my_blog.back_app.model.Post;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class PostRepositoryImpl implements PostRepository {
@@ -47,5 +50,18 @@ public class PostRepositoryImpl implements PostRepository {
                 },
                 id
         );
+    }
+
+    @Override
+    public Long save(Post post) {
+        Map<String, Object> params = new HashMap<>();
+
+        params.put("title", post.getTitle());
+        params.put("text", post.getText());
+
+        return (Long) new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("posts")
+                .usingGeneratedKeyColumns("id")
+                .executeAndReturnKey(params);
     }
 }

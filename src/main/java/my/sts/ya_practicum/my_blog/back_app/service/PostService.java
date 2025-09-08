@@ -2,6 +2,7 @@ package my.sts.ya_practicum.my_blog.back_app.service;
 
 import my.sts.ya_practicum.my_blog.back_app.dao.PostRepository;
 import my.sts.ya_practicum.my_blog.back_app.dto.PostDto;
+import my.sts.ya_practicum.my_blog.back_app.model.Post;
 import my.sts.ya_practicum.my_blog.back_app.util.PostDtoMapper;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,19 @@ public class PostService {
 
     public PostDto findById(Long id) {
         return PostDtoMapper.map(postRepository.findById(id));
+    }
+
+    public PostDto createPost(PostDto postDto) {
+        Post post = new Post();
+
+        post.setTitle(postDto.getTitle());
+        post.setText(postDto.getText());
+
+        Long postId = postRepository.save(post);
+
+        post.setId(postId);
+
+        return PostDtoMapper.map(post);
     }
 
     public boolean exists(Long id) {
