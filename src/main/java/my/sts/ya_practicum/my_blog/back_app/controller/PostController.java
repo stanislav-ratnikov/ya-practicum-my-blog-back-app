@@ -3,6 +3,7 @@ package my.sts.ya_practicum.my_blog.back_app.controller;
 import my.sts.ya_practicum.my_blog.back_app.dto.CommentDto;
 import my.sts.ya_practicum.my_blog.back_app.dto.FindPostsResponseDto;
 import my.sts.ya_practicum.my_blog.back_app.dto.PostDto;
+import my.sts.ya_practicum.my_blog.back_app.service.CommentService;
 import my.sts.ya_practicum.my_blog.back_app.service.PostService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -21,9 +21,11 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+    private final CommentService commentService;
 
-    public PostController(PostService postService) {
+    public PostController(PostService postService, CommentService commentService) {
         this.postService = postService;
+        this.commentService = commentService;
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -46,7 +48,7 @@ public class PostController {
 
     @GetMapping(value = "/{id}/comments", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<CommentDto> getPostComments(@PathVariable("id") Long postId) {
-        return Collections.emptyList();
+        return commentService.findCommentsByPostId(postId);
     }
 
     @GetMapping(value = "/{id}/image", produces = MediaType.IMAGE_PNG_VALUE)

@@ -1,5 +1,6 @@
-package my.sts.ya_practicum.my_blog.back_app.dao;
+package my.sts.ya_practicum.my_blog.back_app.dao.impl;
 
+import my.sts.ya_practicum.my_blog.back_app.dao.PostRepository;
 import my.sts.ya_practicum.my_blog.back_app.model.Post;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;

@@ -10,7 +10,7 @@ public class PostDtoMapper {
 
     public static List<PostDto> map(List<Post> posts) {
         if (posts == null) {
-            return null;
+            return Collections.emptyList();
         }
 
         return posts.stream()
