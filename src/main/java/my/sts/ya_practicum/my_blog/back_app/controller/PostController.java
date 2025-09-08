@@ -1,5 +1,6 @@
 package my.sts.ya_practicum.my_blog.back_app.controller;
 
+import my.sts.ya_practicum.my_blog.back_app.dto.CommentDto;
 import my.sts.ya_practicum.my_blog.back_app.dto.FindPostsResponseDto;
 import my.sts.ya_practicum.my_blog.back_app.dto.PostDto;
 import my.sts.ya_practicum.my_blog.back_app.service.PostService;
@@ -11,6 +12,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Collections;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -40,13 +44,18 @@ public class PostController {
         return postService.findById(id);
     }
 
+    @GetMapping(value = "/{id}/comments", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<CommentDto> getPostComments(@PathVariable("id") Long postId) {
+        return Collections.emptyList();
+    }
+
     @GetMapping(value = "/{id}/image", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<byte[]> getPostImage(@PathVariable("id") Long id) {
-        if (!postService.exists(id)) {
+    public ResponseEntity<byte[]> getPostImage(@PathVariable("id") Long postId) {
+        if (!postService.exists(postId)) {
             return ResponseEntity.notFound().build();
         }
 
-        byte[] bytes = postService.getImage(id);
+        byte[] bytes = postService.getImage(postId);
 
         if (bytes == null || bytes.length == 0) {
             return ResponseEntity.notFound().build();
