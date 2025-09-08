@@ -2,8 +2,11 @@ package my.sts.ya_practicum.my_blog.back_app.controller;
 
 import my.sts.ya_practicum.my_blog.back_app.dto.FindPostsResponseDto;
 import my.sts.ya_practicum.my_blog.back_app.service.PostService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,5 +32,23 @@ public class PostController {
         responseDto.setPosts(postService.findAll());
 
         return responseDto;
+    }
+
+    @GetMapping(value = "/{id}/image", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<byte[]> getPostImage(@PathVariable("id") Long id) {
+        if (!postService.exists(id)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        byte[] bytes = postService.getImage(id);
+
+        if (bytes == null || bytes.length == 0) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_PNG)
+                .header(HttpHeaders.CACHE_CONTROL, "no-store")
+                .body(bytes);
     }
 }

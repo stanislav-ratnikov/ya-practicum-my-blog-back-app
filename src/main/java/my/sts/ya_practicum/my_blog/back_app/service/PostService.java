@@ -19,4 +19,12 @@ public class PostService {
     public List<PostDto> findAll() {
         return PostDtoMapper.map(postRepository.findAll());
     }
+
+    public boolean exists(Long id) {
+        return true;
+    }
+
+    public byte[] getImage(Long postId) {
+        return new byte[0];
+    }
 }
