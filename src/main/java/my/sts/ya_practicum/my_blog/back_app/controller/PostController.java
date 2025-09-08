@@ -1,6 +1,7 @@
 package my.sts.ya_practicum.my_blog.back_app.controller;
 
 import my.sts.ya_practicum.my_blog.back_app.dto.FindPostsResponseDto;
+import my.sts.ya_practicum.my_blog.back_app.dto.PostDto;
 import my.sts.ya_practicum.my_blog.back_app.service.PostService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -32,6 +33,11 @@ public class PostController {
         responseDto.setPosts(postService.findAll());
 
         return responseDto;
+    }
+
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public PostDto getPost(@PathVariable("id") Long id) {
+        return postService.findById(id);
     }
 
     @GetMapping(value = "/{id}/image", produces = MediaType.IMAGE_PNG_VALUE)

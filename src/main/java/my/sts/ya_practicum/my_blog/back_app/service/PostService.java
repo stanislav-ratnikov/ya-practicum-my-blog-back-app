@@ -20,6 +20,10 @@ public class PostService {
         return PostDtoMapper.map(postRepository.findAll());
     }
 
+    public PostDto findById(Long id) {
+        return PostDtoMapper.map(postRepository.findById(id));
+    }
+
     public boolean exists(Long id) {
         return true;
     }

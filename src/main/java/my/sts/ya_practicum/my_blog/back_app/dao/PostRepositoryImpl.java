@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class PostRepositoryImpl implements  PostRepository {
+public class PostRepositoryImpl implements PostRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -18,7 +18,7 @@ public class PostRepositoryImpl implements  PostRepository {
     @Override
     public List<Post> findAll() {
         return jdbcTemplate.query(
-                "select id, title, text from posts",
+                "select * from posts",
                 (rs, rowNum) -> {
                     Post post = new Post();
 
@@ -28,6 +28,23 @@ public class PostRepositoryImpl implements  PostRepository {
 
                     return post;
                 }
+        );
+    }
+
+    @Override
+    public Post findById(long id) {
+        return jdbcTemplate.queryForObject(
+                "select * from posts where id = ?",
+                (rs, rowNum) -> {
+                    Post post = new Post();
+
+                    post.setId(rs.getLong("id"));
+                    post.setTitle(rs.getString("title"));
+                    post.setText(rs.getString("text"));
+
+                    return post;
+                },
+                id
         );
     }
 }
