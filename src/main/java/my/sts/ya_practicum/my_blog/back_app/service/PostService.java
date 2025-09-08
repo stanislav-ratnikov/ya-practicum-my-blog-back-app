@@ -45,4 +45,19 @@ public class PostService {
     public byte[] getImage(Long postId) {
         return new byte[0];
     }
+
+    public PostDto updatePost(Long postId, PostDto postDto) {
+        Post post = postRepository.findById(postId);
+
+        if (post == null) {
+            return null;
+        }
+
+        post.setText(postDto.getText());
+        post.setTitle(postDto.getTitle());
+
+        postRepository.update(post);
+
+        return PostDtoMapper.map(post);
+    }
 }

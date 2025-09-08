@@ -64,4 +64,14 @@ public class PostRepositoryImpl implements PostRepository {
                 .usingGeneratedKeyColumns("id")
                 .executeAndReturnKey(params);
     }
+
+    @Override
+    public void update(Post post) {
+        jdbcTemplate.update(
+                "update posts set title = ?, text = ? where id = ?",
+                post.getText(),
+                post.getTitle(),
+                post.getId()
+        );
+    }
 }
