@@ -9,4 +9,7 @@ import java.util.List;
 @Setter
 public class FindPostsResponseDto {
     private List<PostDto> posts;
+    private Boolean hasPrev;
+    private Boolean hasNext;
+    private Integer lastPage;
 }

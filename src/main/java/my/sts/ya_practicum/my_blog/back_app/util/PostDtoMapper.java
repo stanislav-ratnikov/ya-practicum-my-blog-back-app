@@ -3,6 +3,7 @@ package my.sts.ya_practicum.my_blog.back_app.util;
 import my.sts.ya_practicum.my_blog.back_app.dto.PostDto;
 import my.sts.ya_practicum.my_blog.back_app.model.Post;
 
+import java.util.Collections;
 import java.util.List;
 
 public class PostDtoMapper {
@@ -27,6 +28,11 @@ public class PostDtoMapper {
         dto.setId(post.getId());
         dto.setTitle(post.getTitle());
         dto.setText(post.getText());
+
+        //todo:
+        dto.setTags(Collections.emptyList());
+        dto.setLikeCount(0L);
+        dto.setCommentCount(0L);
 
         return dto;
     }
