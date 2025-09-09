@@ -30,9 +30,9 @@ public class PostDtoMapper {
         dto.setTitle(post.getTitle());
         dto.setText(post.getText());
         dto.setTags(tags == null ? Collections.emptyList() : tags);
+        dto.setLikeCount(post.getLikeCount());
 
         //todo:
-        dto.setLikeCount(0L);
         dto.setCommentCount(0L);
 
         return dto;

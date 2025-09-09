@@ -26,7 +26,7 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<Post> find(PostSearchCriteria searchCriteria, Integer pageNumber, Integer pageSize) {
         String sql = """
-                    SELECT DISTINCT p.*
+                    SELECT p.*
                     FROM posts p
                     LEFT JOIN tags t ON t.post_id = p.id
                     WHERE (:search is null OR title like :search) AND (:tags is null or t.tag IN (:tags))
@@ -51,6 +51,7 @@ public class PostRepositoryImpl implements PostRepository {
                     post.setId(rs.getLong("id"));
                     post.setTitle(rs.getString("title"));
                     post.setText(rs.getString("text"));
+                    post.setLikeCount(rs.getLong("likes_count"));
 
                     return post;
                 }
@@ -67,6 +68,7 @@ public class PostRepositoryImpl implements PostRepository {
                     post.setId(rs.getLong("id"));
                     post.setTitle(rs.getString("title"));
                     post.setText(rs.getString("text"));
+                    post.setLikeCount(rs.getLong("likes_count"));
 
                     return post;
                 },
