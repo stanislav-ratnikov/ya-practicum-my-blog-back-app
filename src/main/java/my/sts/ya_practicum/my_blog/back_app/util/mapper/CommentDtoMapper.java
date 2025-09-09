@@ -1,4 +1,4 @@
-package my.sts.ya_practicum.my_blog.back_app.util;
+package my.sts.ya_practicum.my_blog.back_app.util.mapper;
 
 import my.sts.ya_practicum.my_blog.back_app.dto.CommentDto;
 import my.sts.ya_practicum.my_blog.back_app.model.Comment;

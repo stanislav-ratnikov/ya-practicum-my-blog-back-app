@@ -1,4 +1,4 @@
-package my.sts.ya_practicum.my_blog.back_app.util;
+package my.sts.ya_practicum.my_blog.back_app.util.mapper;
 
 import my.sts.ya_practicum.my_blog.back_app.dto.PostDto;
 import my.sts.ya_practicum.my_blog.back_app.model.Post;
@@ -29,7 +29,7 @@ public class PostDtoMapper {
         dto.setId(post.getId());
         dto.setTitle(post.getTitle());
         dto.setText(post.getText());
-        dto.setTags(tags);
+        dto.setTags(tags == null ? Collections.emptyList() : tags);
 
         //todo:
         dto.setLikeCount(0L);

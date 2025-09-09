@@ -3,7 +3,7 @@ package my.sts.ya_practicum.my_blog.back_app.service;
 import my.sts.ya_practicum.my_blog.back_app.dao.PostRepository;
 import my.sts.ya_practicum.my_blog.back_app.dto.PostDto;
 import my.sts.ya_practicum.my_blog.back_app.model.Post;
-import my.sts.ya_practicum.my_blog.back_app.util.PostDtoMapper;
+import my.sts.ya_practicum.my_blog.back_app.util.mapper.PostDtoMapper;
 import my.sts.ya_practicum.my_blog.back_app.util.search.PostSearchCriteria;
 import my.sts.ya_practicum.my_blog.back_app.util.search.PostSearchCriteriaParser;
 import org.springframework.stereotype.Service;
@@ -62,10 +62,6 @@ public class PostService {
 
     public boolean exists(Long id) {
         return true;
-    }
-
-    public byte[] getImage(Long postId) {
-        return new byte[0];
     }
 
     public PostDto updatePost(Long postId, PostDto postDto) {

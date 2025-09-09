@@ -5,9 +5,7 @@ import my.sts.ya_practicum.my_blog.back_app.dto.FindPostsResponseDto;
 import my.sts.ya_practicum.my_blog.back_app.dto.PostDto;
 import my.sts.ya_practicum.my_blog.back_app.service.CommentService;
 import my.sts.ya_practicum.my_blog.back_app.service.PostService;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -62,23 +60,5 @@ public class PostController {
     @GetMapping(value = "/{id}/comments", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<CommentDto> getPostComments(@PathVariable("id") Long postId) {
         return commentService.findCommentsByPostId(postId);
-    }
-
-    @GetMapping(value = "/{id}/image", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<byte[]> getPostImage(@PathVariable("id") Long postId) {
-        if (!postService.exists(postId)) {
-            return ResponseEntity.notFound().build();
-        }
-
-        byte[] bytes = postService.getImage(postId);
-
-        if (bytes == null || bytes.length == 0) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.IMAGE_PNG)
-                .header(HttpHeaders.CACHE_CONTROL, "no-store")
-                .body(bytes);
     }
 }

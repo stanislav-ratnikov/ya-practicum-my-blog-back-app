@@ -2,7 +2,7 @@ package my.sts.ya_practicum.my_blog.back_app.service;
 
 import my.sts.ya_practicum.my_blog.back_app.dao.CommentRepository;
 import my.sts.ya_practicum.my_blog.back_app.dto.CommentDto;
-import my.sts.ya_practicum.my_blog.back_app.util.CommentDtoMapper;
+import my.sts.ya_practicum.my_blog.back_app.util.mapper.CommentDtoMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
