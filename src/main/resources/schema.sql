@@ -3,7 +3,7 @@ create table if not exists posts
     id bigserial primary key,
     title varchar(256) not null,
     text varchar(256) not null,
-    likes_count bigint not null
+    like_count bigint not null
 );
 
 create table if not exists tags
@@ -26,7 +26,7 @@ create table if not exists comments
 
 CREATE INDEX idx_comments_post_id ON comments(post_id);
 
-insert into posts(title, text, likes_count) values ('пост1', 'пост1_текст', 0);
+insert into posts(title, text, like_count) values ('пост1', 'пост1_текст', 0);
 
 insert into tags(post_id, tag) values ((select id from posts where title = 'пост1'), 'пост1_тег1');
 

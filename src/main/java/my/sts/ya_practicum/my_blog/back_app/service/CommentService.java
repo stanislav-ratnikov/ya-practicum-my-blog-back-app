@@ -6,6 +6,7 @@ import my.sts.ya_practicum.my_blog.back_app.util.mapper.CommentDtoMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CommentService {
@@ -18,5 +19,9 @@ public class CommentService {
 
     public List<CommentDto> findCommentsByPostId(Long postId) {
         return CommentDtoMapper.map(commentRepository.findByPostId(postId));
+    }
+
+    public Map<Long, Long> getCommentCounts(List<Long> postIds) {
+        return commentRepository.getCommentCounts(postIds);
     }
 }

@@ -51,7 +51,7 @@ public class PostRepositoryImpl implements PostRepository {
                     post.setId(rs.getLong("id"));
                     post.setTitle(rs.getString("title"));
                     post.setText(rs.getString("text"));
-                    post.setLikeCount(rs.getLong("likes_count"));
+                    post.setLikeCount(rs.getLong("like_count"));
 
                     return post;
                 }
@@ -68,7 +68,7 @@ public class PostRepositoryImpl implements PostRepository {
                     post.setId(rs.getLong("id"));
                     post.setTitle(rs.getString("title"));
                     post.setText(rs.getString("text"));
-                    post.setLikeCount(rs.getLong("likes_count"));
+                    post.setLikeCount(rs.getLong("like_count"));
 
                     return post;
                 },

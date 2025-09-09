@@ -17,10 +17,12 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final TagService tagService;
+    private final CommentService commentService;
 
-    public PostService(PostRepository postRepository, TagService tagService) {
+    public PostService(PostRepository postRepository, TagService tagService, CommentService commentService) {
         this.postRepository = postRepository;
         this.tagService = tagService;
+        this.commentService = commentService;
     }
 
     public List<PostDto> findPosts(
@@ -36,15 +38,17 @@ public class PostService {
                 .toList();
 
         Map<Long, List<String>> tagsByPostIds = tagService.getTagsByPostIds(postIds);
+        Map<Long, Long> commentCounts = commentService.getCommentCounts(postIds);
 
-        return PostDtoMapper.map(posts, tagsByPostIds);
+        return PostDtoMapper.map(posts, tagsByPostIds, commentCounts);
     }
 
     public PostDto findById(Long id) {
         Post post = postRepository.findById(id);
         List<String> tags = tagService.getTagsByPostId(id);
+        Long commentCount = commentService.getCommentCounts(List.of(id)).get(id);
 
-        return PostDtoMapper.map(post, tags);
+        return PostDtoMapper.map(post, tags, commentCount);
     }
 
     public PostDto createPost(PostDto postDto) {
@@ -57,7 +61,7 @@ public class PostService {
 
         post.setId(postId);
 
-        return PostDtoMapper.map(post, /*todo:*/ Collections.emptyList());
+        return PostDtoMapper.map(post, /*todo:*/ Collections.emptyList(), /*todo:*/ 0L);
     }
 
     public boolean exists(Long id) {
@@ -76,6 +80,6 @@ public class PostService {
 
         postRepository.update(post);
 
-        return PostDtoMapper.map(post, /*todo:*/ Collections.emptyList());
+        return PostDtoMapper.map(post, /*todo:*/ Collections.emptyList(), /*todo:*/ 0L);
     }
 }
