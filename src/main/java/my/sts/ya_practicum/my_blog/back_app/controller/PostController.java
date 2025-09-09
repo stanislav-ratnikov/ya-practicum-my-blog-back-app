@@ -1,9 +1,7 @@
 package my.sts.ya_practicum.my_blog.back_app.controller;
 
-import my.sts.ya_practicum.my_blog.back_app.dto.CommentDto;
 import my.sts.ya_practicum.my_blog.back_app.dto.FindPostsResponseDto;
 import my.sts.ya_practicum.my_blog.back_app.dto.PostDto;
-import my.sts.ya_practicum.my_blog.back_app.service.CommentService;
 import my.sts.ya_practicum.my_blog.back_app.service.PostService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,18 +13,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/posts")
 public class PostController {
 
     private final PostService postService;
-    private final CommentService commentService;
 
-    public PostController(PostService postService, CommentService commentService) {
+    public PostController(PostService postService) {
         this.postService = postService;
-        this.commentService = commentService;
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -55,10 +49,5 @@ public class PostController {
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public PostDto updatePost(@PathVariable("id") Long postId, @RequestBody PostDto post) {
         return postService.updatePost(postId, post);
-    }
-
-    @GetMapping(value = "/{id}/comments", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<CommentDto> getPostComments(@PathVariable("id") Long postId) {
-        return commentService.findCommentsByPostId(postId);
     }
 }
