@@ -33,13 +33,13 @@ public class PostController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public FindPostsResponseDto findPosts(
-            @RequestParam(name = "search", required = false) String search,
-            @RequestParam(name = "pageNumber",required = false) Integer pageNumber,
-            @RequestParam(name = "pageSize",required = false) Integer pageSize
+            @RequestParam(name = "search") String search,
+            @RequestParam(name = "pageNumber") Integer pageNumber,
+            @RequestParam(name = "pageSize") Integer pageSize
     ) {
         FindPostsResponseDto responseDto = new FindPostsResponseDto();
 
-        responseDto.setPosts(postService.findAll());
+        responseDto.setPosts(postService.findPosts(search, pageNumber, pageSize));
 
         return responseDto;
     }

@@ -2,6 +2,7 @@ package my.sts.ya_practicum.my_blog.back_app.dao.impl;
 
 import my.sts.ya_practicum.my_blog.back_app.dao.PostRepository;
 import my.sts.ya_practicum.my_blog.back_app.model.Post;
+import my.sts.ya_practicum.my_blog.back_app.util.search.PostSearchCriteria;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -20,9 +21,17 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public List<Post> findAll() {
-        return jdbcTemplate.query(
-                "select * from posts",
+    public List<Post> find(PostSearchCriteria searchCriteria, Integer pageNumber, Integer pageSize) {
+        String sql = """
+                    SELECT * 
+                    FROM posts
+                    WHERE title like ?
+                    ORDER BY id
+                    LIMIT ?
+                    OFFSET ?
+                    """;
+
+        return jdbcTemplate.query(sql,
                 (rs, rowNum) -> {
                     Post post = new Post();
 
@@ -31,14 +40,17 @@ public class PostRepositoryImpl implements PostRepository {
                     post.setText(rs.getString("text"));
 
                     return post;
-                }
+                },
+                "%" + searchCriteria.searchSubString() + "%",
+                pageSize,
+                (pageNumber - 1) * pageSize
         );
     }
 
     @Override
     public Post findById(long id) {
         return jdbcTemplate.queryForObject(
-                "select * from posts where id = ?",
+                "SELECT * FROM posts WHERE id = ?",
                 (rs, rowNum) -> {
                     Post post = new Post();
 
@@ -68,7 +80,7 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public void update(Post post) {
         jdbcTemplate.update(
-                "update posts set title = ?, text = ? where id = ?",
+                "UPDATE posts SET title = ?, text = ? WHERE id = ?",
                 post.getText(),
                 post.getTitle(),
                 post.getId()

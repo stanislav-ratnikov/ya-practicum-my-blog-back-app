@@ -4,6 +4,8 @@ import my.sts.ya_practicum.my_blog.back_app.dao.PostRepository;
 import my.sts.ya_practicum.my_blog.back_app.dto.PostDto;
 import my.sts.ya_practicum.my_blog.back_app.model.Post;
 import my.sts.ya_practicum.my_blog.back_app.util.PostDtoMapper;
+import my.sts.ya_practicum.my_blog.back_app.util.search.PostSearchCriteria;
+import my.sts.ya_practicum.my_blog.back_app.util.search.PostSearchCriteriaParser;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,8 +19,15 @@ public class PostService {
         this.postRepository = postRepository;
     }
 
-    public List<PostDto> findAll() {
-        return PostDtoMapper.map(postRepository.findAll());
+    public List<PostDto> findPosts(
+            String search,
+            Integer pageNumber,
+            Integer pageSize
+    ) {
+        PostSearchCriteria postSearchCriteria = PostSearchCriteriaParser.parse(search);
+        List<Post> posts = postRepository.find(postSearchCriteria, pageNumber, pageSize);
+
+        return PostDtoMapper.map(posts);
     }
 
     public PostDto findById(Long id) {

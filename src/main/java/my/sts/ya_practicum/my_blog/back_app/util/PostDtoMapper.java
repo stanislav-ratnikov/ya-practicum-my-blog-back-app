@@ -28,9 +28,9 @@ public class PostDtoMapper {
         dto.setId(post.getId());
         dto.setTitle(post.getTitle());
         dto.setText(post.getText());
+        dto.setTags(post.getTags());
 
         //todo:
-        dto.setTags(Collections.emptyList());
         dto.setLikeCount(0L);
         dto.setCommentCount(0L);
 

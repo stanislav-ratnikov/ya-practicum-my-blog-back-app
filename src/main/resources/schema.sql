@@ -1,10 +1,12 @@
-create table if not exists posts (
+create table if not exists posts
+(
     id bigserial primary key,
     title varchar(256) not null,
     text varchar(256) not null
 );
 
-create table if not exists comments (
+create table if not exists comments
+(
     id bigserial primary key,
     post_id bigserial not null,
     text varchar(256) not null,
