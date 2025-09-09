@@ -5,20 +5,21 @@ import my.sts.ya_practicum.my_blog.back_app.model.Post;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class PostDtoMapper {
 
-    public static List<PostDto> map(List<Post> posts) {
+    public static List<PostDto> map(List<Post> posts, Map<Long, List<String>> tagsByPostIds) {
         if (posts == null) {
             return Collections.emptyList();
         }
 
         return posts.stream()
-                .map(PostDtoMapper::map)
+                .map(p -> map(p, tagsByPostIds.get(p.getId())))
                 .toList();
     }
 
-    public static PostDto map(Post post) {
+    public static PostDto map(Post post, List<String> tags) {
         if (post == null) {
             return null;
         }
@@ -28,7 +29,7 @@ public class PostDtoMapper {
         dto.setId(post.getId());
         dto.setTitle(post.getTitle());
         dto.setText(post.getText());
-        dto.setTags(post.getTags());
+        dto.setTags(tags);
 
         //todo:
         dto.setLikeCount(0L);

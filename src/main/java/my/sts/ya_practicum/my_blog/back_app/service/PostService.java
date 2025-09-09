@@ -8,15 +8,19 @@ import my.sts.ya_practicum.my_blog.back_app.util.search.PostSearchCriteria;
 import my.sts.ya_practicum.my_blog.back_app.util.search.PostSearchCriteriaParser;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class PostService {
 
     private final PostRepository postRepository;
+    private final TagService tagService;
 
-    public PostService(PostRepository postRepository) {
+    public PostService(PostRepository postRepository, TagService tagService) {
         this.postRepository = postRepository;
+        this.tagService = tagService;
     }
 
     public List<PostDto> findPosts(
@@ -27,11 +31,20 @@ public class PostService {
         PostSearchCriteria postSearchCriteria = PostSearchCriteriaParser.parse(search);
         List<Post> posts = postRepository.find(postSearchCriteria, pageNumber, pageSize);
 
-        return PostDtoMapper.map(posts);
+        List<Long> postIds = posts.stream()
+                .map(Post::getId)
+                .toList();
+
+        Map<Long, List<String>> tagsByPostIds = tagService.getTagsByPostIds(postIds);
+
+        return PostDtoMapper.map(posts, tagsByPostIds);
     }
 
     public PostDto findById(Long id) {
-        return PostDtoMapper.map(postRepository.findById(id));
+        Post post = postRepository.findById(id);
+        List<String> tags = tagService.getTagsByPostId(id);
+
+        return PostDtoMapper.map(post, tags);
     }
 
     public PostDto createPost(PostDto postDto) {
@@ -44,7 +57,7 @@ public class PostService {
 
         post.setId(postId);
 
-        return PostDtoMapper.map(post);
+        return PostDtoMapper.map(post, /*todo:*/ Collections.emptyList());
     }
 
     public boolean exists(Long id) {
@@ -67,6 +80,6 @@ public class PostService {
 
         postRepository.update(post);
 
-        return PostDtoMapper.map(post);
+        return PostDtoMapper.map(post, /*todo:*/ Collections.emptyList());
     }
 }

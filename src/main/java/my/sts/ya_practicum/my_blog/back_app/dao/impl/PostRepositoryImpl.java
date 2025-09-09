@@ -4,6 +4,7 @@ import my.sts.ya_practicum.my_blog.back_app.dao.PostRepository;
 import my.sts.ya_practicum.my_blog.back_app.model.Post;
 import my.sts.ya_practicum.my_blog.back_app.util.search.PostSearchCriteria;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -15,23 +16,35 @@ import java.util.Map;
 public class PostRepositoryImpl implements PostRepository {
 
     private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    public PostRepositoryImpl(JdbcTemplate jdbcTemplate) {
+    public PostRepositoryImpl(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
     @Override
     public List<Post> find(PostSearchCriteria searchCriteria, Integer pageNumber, Integer pageSize) {
         String sql = """
-                    SELECT * 
-                    FROM posts
-                    WHERE title like ?
+                    SELECT DISTINCT p.*
+                    FROM posts p
+                    LEFT JOIN tags t ON t.post_id = p.id
+                    WHERE (:search is null OR title like :search) AND (:tags is null or t.tag IN (:tags))
                     ORDER BY id
-                    LIMIT ?
-                    OFFSET ?
+                    LIMIT :limit
+                    OFFSET :offset
                     """;
 
-        return jdbcTemplate.query(sql,
+        HashMap<String, Object> params = new HashMap<>();
+
+        params.put("search", searchCriteria.searchSubString() == null ? null : "%" + searchCriteria.searchSubString() + "%");
+        params.put("tags", searchCriteria.tags());
+        params.put("limit", pageSize);
+        params.put("offset", (pageNumber - 1) * pageSize);
+
+        return namedParameterJdbcTemplate.query(
+                sql,
+                params,
                 (rs, rowNum) -> {
                     Post post = new Post();
 
@@ -40,10 +53,7 @@ public class PostRepositoryImpl implements PostRepository {
                     post.setText(rs.getString("text"));
 
                     return post;
-                },
-                "%" + searchCriteria.searchSubString() + "%",
-                pageSize,
-                (pageNumber - 1) * pageSize
+                }
         );
     }
 

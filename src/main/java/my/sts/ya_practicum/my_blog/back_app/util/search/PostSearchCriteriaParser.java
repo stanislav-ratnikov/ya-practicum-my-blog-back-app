@@ -19,8 +19,12 @@ public class PostSearchCriteriaParser {
 
         List<String> tags = Arrays.stream(words)
                 .filter(word -> word.startsWith("#"))
+                .map(word -> word.substring(1))
                 .toList();
 
-        return new PostSearchCriteria(searchSubString, tags);
+        return new PostSearchCriteria(
+                searchSubString.isEmpty() ? null : searchSubString,
+                tags.isEmpty() ? null : tags
+        );
     }
 }
