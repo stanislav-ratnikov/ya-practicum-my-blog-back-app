@@ -2,11 +2,9 @@ package my.sts.ya_practicum.my_blog.back_app.dao.impl;
 
 import my.sts.ya_practicum.my_blog.back_app.dao.CommentRepository;
 import my.sts.ya_practicum.my_blog.back_app.model.Comment;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
@@ -97,5 +95,18 @@ public class CommentRepositoryImpl implements CommentRepository {
                 sql,
                 params, rs -> rs.next() ? extractComment(rs) : null
         );
+    }
+
+    @Override
+    public Long save(Comment comment) {
+        Map<String, Object> params = new HashMap<>() {{
+            put("text", comment.getText());
+            put("post_id", comment.getPostId());
+        }};
+
+        return (Long) new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("comments")
+                .usingGeneratedKeyColumns("id")
+                .executeAndReturnKey(params);
     }
 }

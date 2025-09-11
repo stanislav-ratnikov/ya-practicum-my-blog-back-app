@@ -11,4 +11,5 @@ public interface CommentRepository {
     Map<Long, Long> getCommentsCountByPostId(List<Long> postIds);
     void deleteByPostId(Long postId);
     Comment findByPostIdAndCommentId(Long postId, Long commentId);
+    Long save(Comment comment);
 }

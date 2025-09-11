@@ -2,6 +2,7 @@ package my.sts.ya_practicum.my_blog.back_app.service;
 
 import my.sts.ya_practicum.my_blog.back_app.dao.CommentRepository;
 import my.sts.ya_practicum.my_blog.back_app.dto.CommentDto;
+import my.sts.ya_practicum.my_blog.back_app.model.Comment;
 import my.sts.ya_practicum.my_blog.back_app.util.mapper.CommentDtoMapper;
 import org.springframework.stereotype.Service;
 
@@ -48,5 +49,16 @@ public class CommentService {
         }
 
         return CommentDtoMapper.map(commentRepository.findByPostIdAndCommentId(postId, commentId));
+    }
+
+    public CommentDto createComment(Long postId, CommentDto commentDto) {
+        Comment comment = new Comment();
+
+        comment.setPostId(postId);
+        comment.setText(commentDto.getText());
+
+        Long commentId = commentRepository.save(comment);
+
+        return findComment(postId, commentId);
     }
 }
