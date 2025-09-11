@@ -131,4 +131,12 @@ public class PostRepositoryImpl implements PostRepository {
 
         return jdbcTemplate.queryForObject(sql, Long.class, postId);
     }
+
+    @Override
+    public boolean exists(long postId) {
+        String sql = "SELECT COUNT(*) FROM posts WHERE id = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, postId);
+
+        return count != null && count > 0;
+    }
 }

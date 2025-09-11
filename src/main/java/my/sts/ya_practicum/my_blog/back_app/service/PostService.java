@@ -70,7 +70,7 @@ public class PostService {
     }
 
     public boolean exists(Long id) {
-        return true;
+        return postRepository.exists(id);
     }
 
     public PostDto updatePost(Long postId, PostDto postDto) {
