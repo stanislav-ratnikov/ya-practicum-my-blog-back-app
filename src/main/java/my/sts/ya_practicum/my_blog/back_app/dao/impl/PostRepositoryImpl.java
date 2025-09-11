@@ -111,4 +111,9 @@ public class PostRepositoryImpl implements PostRepository {
     private String[] toArray(List<String> list) {
         return list == null ? null : list.toArray(new String[0]);
     }
+
+    @Override
+    public void deletePost(long postId) {
+        jdbcTemplate.update("DELETE FROM posts WHERE id = ?", postId);
+    }
 }

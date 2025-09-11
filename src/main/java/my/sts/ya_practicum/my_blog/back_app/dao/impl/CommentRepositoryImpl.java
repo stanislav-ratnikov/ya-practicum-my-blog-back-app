@@ -48,7 +48,7 @@ public class CommentRepositoryImpl implements CommentRepository {
                     GROUP BY p.id
                     """;
 
-        HashMap<String, Object> params = new HashMap<>(){
+        Map<String, Object> params = new HashMap<>(){
             {
                 put("postIds", postIds);
             }
@@ -66,5 +66,16 @@ public class CommentRepositoryImpl implements CommentRepository {
 
             return commentCounts;
         });
+    }
+
+    @Override
+    public void deleteByPostId(Long postId) {
+        Map<String, Object> params = new HashMap<>(){
+            {
+                put("postId", postId);
+            }
+        };
+
+        namedParameterJdbcTemplate.update("DELETE FROM comments WHERE post_id = :postId", params);
     }
 }

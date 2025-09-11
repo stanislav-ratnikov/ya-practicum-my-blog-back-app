@@ -88,4 +88,9 @@ public class PostService {
 
         return findById(postId);
     }
+
+    public void deletePost(Long postId) {
+        commentService.deleteByPostId(postId);
+        postRepository.deletePost(postId);
+    }
 }

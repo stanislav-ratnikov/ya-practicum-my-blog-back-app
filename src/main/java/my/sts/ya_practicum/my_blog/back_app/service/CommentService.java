@@ -33,4 +33,12 @@ public class CommentService {
 
         return commentRepository.getCommentsCountByPostId(postIds);
     }
+
+    public void deleteByPostId(Long postId) {
+        if (postId == null) {
+            return;
+        }
+
+        commentRepository.deleteByPostId(postId);
+    }
 }
