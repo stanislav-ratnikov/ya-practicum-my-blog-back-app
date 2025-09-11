@@ -21,11 +21,11 @@ public class DatabaseSchemaInitializer {
         this.schemaScript = schemaScript;
     }
 
-    @EventListener
-    public void populate(ContextRefreshedEvent event) {
-        ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
+    @EventListener(ContextRefreshedEvent.class)
+    public void populateDatabase() {
+        ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator();
 
-        populator.addScript(schemaScript);
-        populator.execute(dataSource);
+        databasePopulator.addScript(schemaScript);
+        databasePopulator.execute(dataSource);
     }
 }
