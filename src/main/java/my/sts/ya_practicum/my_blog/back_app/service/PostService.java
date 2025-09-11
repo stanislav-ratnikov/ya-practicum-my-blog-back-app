@@ -8,7 +8,6 @@ import my.sts.ya_practicum.my_blog.back_app.util.search.PostSearchCriteria;
 import my.sts.ya_practicum.my_blog.back_app.util.search.PostSearchCriteriaParser;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -16,12 +15,10 @@ import java.util.Map;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final TagService tagService;
     private final CommentService commentService;
 
-    public PostService(PostRepository postRepository, TagService tagService, CommentService commentService) {
+    public PostService(PostRepository postRepository, CommentService commentService) {
         this.postRepository = postRepository;
-        this.tagService = tagService;
         this.commentService = commentService;
     }
 
@@ -37,18 +34,16 @@ public class PostService {
                 .map(Post::getId)
                 .toList();
 
-        Map<Long, List<String>> tagsByPostIds = tagService.getTagsByPostIds(postIds);
         Map<Long, Long> commentCounts = commentService.getCommentCounts(postIds);
 
-        return PostDtoMapper.map(posts, tagsByPostIds, commentCounts);
+        return PostDtoMapper.map(posts, commentCounts);
     }
 
     public PostDto findById(Long id) {
         Post post = postRepository.findById(id);
-        List<String> tags = tagService.getTagsByPostId(id);
         Long commentCount = commentService.getCommentCounts(List.of(id)).get(id);
 
-        return PostDtoMapper.map(post, tags, commentCount);
+        return PostDtoMapper.map(post, commentCount);
     }
 
     public PostDto createPost(PostDto postDto) {
@@ -61,7 +56,7 @@ public class PostService {
 
         post.setId(postId);
 
-        return PostDtoMapper.map(post, /*todo:*/ Collections.emptyList(), /*todo:*/ 0L);
+        return PostDtoMapper.map(post, /*todo:*/ 0L);
     }
 
     public boolean exists(Long id) {
@@ -80,6 +75,6 @@ public class PostService {
 
         postRepository.update(post);
 
-        return PostDtoMapper.map(post, /*todo:*/ Collections.emptyList(), /*todo:*/ 0L);
+        return PostDtoMapper.map(post, /*todo:*/ 0L);
     }
 }

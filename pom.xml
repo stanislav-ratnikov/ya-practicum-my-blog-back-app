@@ -14,9 +14,9 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <h2.version>2.3.232</h2.version>
         <jackson.version>2.20.0</jackson.version>
         <jakarta.servlet-api.version>6.1.0</jakarta.servlet-api.version>
+        <postgresql.version>42.7.7</postgresql.version>
         <spring.version>6.2.10</spring.version>
         <spring-data.version>3.5.3</spring-data.version>
         <lombok.version>1.18.40</lombok.version>
@@ -50,11 +50,11 @@
             <version>${jackson.version}</version>
         </dependency>
 
-        <!--h2-->
+        <!--postgresql-->
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>${h2.version}</version>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
         </dependency>
 
         <!--lombok-->

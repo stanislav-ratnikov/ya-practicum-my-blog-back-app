@@ -26,10 +26,9 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<Post> find(PostSearchCriteria searchCriteria, Integer pageNumber, Integer pageSize) {
         String sql = """
-                    SELECT p.*
-                    FROM posts p
-                    LEFT JOIN tags t ON t.post_id = p.id
-                    WHERE (:search is null OR title like :search) AND (:tags is null or t.tag IN (:tags))
+                    SELECT *
+                    FROM posts
+                    WHERE (:search::varchar IS NULL OR title LIKE :search) AND (:tags::TEXT[] IS NULL OR tags @> :tags::TEXT[])
                     ORDER BY id
                     LIMIT :limit
                     OFFSET :offset
@@ -51,6 +50,7 @@ public class PostRepositoryImpl implements PostRepository {
                     post.setId(rs.getLong("id"));
                     post.setTitle(rs.getString("title"));
                     post.setText(rs.getString("text"));
+                    post.setTags(List.of((String[]) rs.getArray("tags").getArray()));
                     post.setLikeCount(rs.getLong("like_count"));
 
                     return post;
