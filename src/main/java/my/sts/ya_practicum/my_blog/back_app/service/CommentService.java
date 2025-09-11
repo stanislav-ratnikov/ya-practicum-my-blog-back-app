@@ -61,4 +61,20 @@ public class CommentService {
 
         return findComment(postId, commentId);
     }
+
+    public CommentDto updateComment(Long postId, Long commentId, CommentDto commentDto) {
+        // todo: check if post exists
+
+        Comment comment = commentRepository.findByPostIdAndCommentId(postId, commentId);
+
+        if (comment == null) {
+            return null;
+        }
+
+        comment.setText(commentDto.getText());
+
+        commentRepository.update(comment);
+
+        return findComment(postId, commentId);
+    }
 }

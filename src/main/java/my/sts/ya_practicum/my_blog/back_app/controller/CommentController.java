@@ -31,7 +31,8 @@ public class CommentController {
 
     @GetMapping(value = "/{commentId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public CommentDto getComment(@PathVariable("postId") Long postId,
-                                 @PathVariable("commentId") Long commentId) {
+                                 @PathVariable("commentId") Long commentId
+    ) {
         return commentService.findComment(postId, commentId);
     }
 
@@ -40,9 +41,12 @@ public class CommentController {
         return commentService.createComment(postId, commentDto);
     }
 
-    @PutMapping
-    public CommentDto updateComment(@RequestBody CommentDto commentDto) {
-        return null;
+    @PutMapping(value = "/{commentId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public CommentDto updateComment(@PathVariable("postId") Long postId,
+                                    @PathVariable("commentId") Long commentId,
+                                    @RequestBody CommentDto commentDto
+    ) {
+        return commentService.updateComment(postId, commentId, commentDto);
     }
 
     @DeleteMapping

@@ -109,4 +109,14 @@ public class CommentRepositoryImpl implements CommentRepository {
                 .usingGeneratedKeyColumns("id")
                 .executeAndReturnKey(params);
     }
+
+    @Override
+    public void update(Comment comment) {
+        jdbcTemplate.update(
+                "UPDATE comments SET text = ? WHERE id = ? AND post_id = ?",
+                comment.getText(),
+                comment.getId(),
+                comment.getPostId()
+        );
+    }
 }
