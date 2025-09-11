@@ -11,8 +11,8 @@ CREATE TABLE IF NOT EXISTS posts
     id BIGSERIAL PRIMARY KEY,
     title VARCHAR(256) NOT NULL,
     "text" VARCHAR(256) NOT NULL,
-    tags TEXT[] NOT NULL,
-    like_count BIGINT NOT NULL
+    tags TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[],
+    like_count BIGINT NOT NULL DEFAULT 0
 );
 
 CREATE INDEX IF NOT EXISTS idx_posts_tags_gin ON posts USING GIN (tags);

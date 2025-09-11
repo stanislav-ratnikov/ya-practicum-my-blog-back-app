@@ -62,12 +62,11 @@ public class PostService {
 
         post.setTitle(postDto.getTitle());
         post.setText(postDto.getText());
+        post.setTags(postDto.getTags());
 
         Long postId = postRepository.save(post);
 
-        post.setId(postId);
-
-        return PostDtoMapper.map(post, /*todo:*/ 0L);
+        return findById(postId);
     }
 
     public boolean exists(Long id) {
@@ -86,6 +85,6 @@ public class PostService {
 
         postRepository.update(post);
 
-        return PostDtoMapper.map(post, /*todo:*/ 0L);
+        return findById(postId);
     }
 }

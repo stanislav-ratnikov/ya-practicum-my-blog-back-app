@@ -102,9 +102,11 @@ public class PostRepositoryImpl implements PostRepository {
 
         params.put("title", post.getTitle());
         params.put("text", post.getText());
+        params.put("tags", post.getTags() != null ? post.getTags().toArray(String[]::new) : new String[]{});
 
         return (Long) new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("posts")
+                .usingColumns("title", "text", "tags")
                 .usingGeneratedKeyColumns("id")
                 .executeAndReturnKey(params);
     }
