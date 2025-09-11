@@ -61,6 +61,24 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
+    public int count(PostSearchCriteria searchCriteria) {
+        String sql = """
+                    SELECT count(*)
+                    FROM posts
+                    WHERE (:searchTitle = FALSE OR title LIKE :search) AND (:searchTags = FALSE OR tags @> :tags::TEXT[])
+                    """;
+
+        HashMap<String, Object> params = new HashMap<>();
+
+        params.put("searchTitle", searchCriteria.searchSubString() != null);
+        params.put("search", searchCriteria.searchSubString() == null ? null : "%" + searchCriteria.searchSubString() + "%");
+        params.put("searchTags", searchCriteria.tags() != null);
+        params.put("tags", searchCriteria.tags() == null ? null : searchCriteria.tags().toArray(String[]::new));
+
+        return namedParameterJdbcTemplate.queryForObject(sql, params, Integer.class);
+    }
+
+    @Override
     public Post findById(long id) {
         return jdbcTemplate.queryForObject(
                 "SELECT * FROM posts WHERE id = ?",

@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS comments
 
 CREATE INDEX IF NOT EXISTS idx_comments_post_id ON comments(post_id);
 
-INSERT INTO posts(title, text, tags, like_count) VALUES ('пост1', 'пост1_текст', ARRAY['текст1_тег1'], 0);
+INSERT INTO posts(title, text, tags, like_count) VALUES ('пост1', 'пост1_текст', ARRAY['пост1_тег1'], 0);
 
 INSERT INTO comments (post_id, text)
 VALUES ((SELECT id FROM posts WHERE title = 'пост1'), 'пост1_комментарий1');

@@ -29,11 +29,7 @@ public class PostController {
             @RequestParam(name = "pageNumber") Integer pageNumber,
             @RequestParam(name = "pageSize") Integer pageSize
     ) {
-        FindPostsResponseDto responseDto = new FindPostsResponseDto();
-
-        responseDto.setPosts(postService.findPosts(search, pageNumber, pageSize));
-
-        return responseDto;
+        return postService.findPosts(search, pageNumber, pageSize);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
