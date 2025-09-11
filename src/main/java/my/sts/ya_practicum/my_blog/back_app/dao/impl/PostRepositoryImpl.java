@@ -4,6 +4,7 @@ import my.sts.ya_practicum.my_blog.back_app.dao.PostRepository;
 import my.sts.ya_practicum.my_blog.back_app.model.Post;
 import my.sts.ya_practicum.my_blog.back_app.util.search.PostSearchCriteria;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -17,6 +18,18 @@ public class PostRepositoryImpl implements PostRepository {
 
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    private final RowMapper<Post> postRowMapper = (rs, rowNum) -> {
+        Post post = new Post();
+
+        post.setId(rs.getLong("id"));
+        post.setTitle(rs.getString("title"));
+        post.setText(rs.getString("text"));
+        post.setTags(List.of((String[]) rs.getArray("tags").getArray()));
+        post.setLikesCount(rs.getLong("like_count"));
+
+        return post;
+    };
 
     public PostRepositoryImpl(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -43,21 +56,7 @@ public class PostRepositoryImpl implements PostRepository {
         params.put("limit", pageSize);
         params.put("offset", (pageNumber - 1) * pageSize);
 
-        return namedParameterJdbcTemplate.query(
-                sql,
-                params,
-                (rs, rowNum) -> {
-                    Post post = new Post();
-
-                    post.setId(rs.getLong("id"));
-                    post.setTitle(rs.getString("title"));
-                    post.setText(rs.getString("text"));
-                    post.setTags(List.of((String[]) rs.getArray("tags").getArray()));
-                    post.setLikesCount(rs.getLong("like_count"));
-
-                    return post;
-                }
-        );
+        return namedParameterJdbcTemplate.query(sql, params, postRowMapper);
     }
 
     @Override
@@ -73,27 +72,14 @@ public class PostRepositoryImpl implements PostRepository {
         params.put("searchTitle", searchCriteria.searchSubString() != null);
         params.put("search", searchCriteria.searchSubString() == null ? null : "%" + searchCriteria.searchSubString() + "%");
         params.put("searchTags", searchCriteria.tags() != null);
-        params.put("tags", searchCriteria.tags() == null ? null : searchCriteria.tags().toArray(String[]::new));
+        params.put("tags", toArray(searchCriteria.tags()));
 
         return namedParameterJdbcTemplate.queryForObject(sql, params, Integer.class);
     }
 
     @Override
     public Post findById(long id) {
-        return jdbcTemplate.queryForObject(
-                "SELECT * FROM posts WHERE id = ?",
-                (rs, rowNum) -> {
-                    Post post = new Post();
-
-                    post.setId(rs.getLong("id"));
-                    post.setTitle(rs.getString("title"));
-                    post.setText(rs.getString("text"));
-                    post.setLikesCount(rs.getLong("like_count"));
-
-                    return post;
-                },
-                id
-        );
+        return jdbcTemplate.queryForObject("SELECT * FROM posts WHERE id = ?", postRowMapper, id);
     }
 
     @Override
@@ -102,7 +88,7 @@ public class PostRepositoryImpl implements PostRepository {
 
         params.put("title", post.getTitle());
         params.put("text", post.getText());
-        params.put("tags", post.getTags() != null ? post.getTags().toArray(String[]::new) : new String[]{});
+        params.put("tags", toArray(post.getTags()));
 
         return (Long) new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("posts")
@@ -114,10 +100,15 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public void update(Post post) {
         jdbcTemplate.update(
-                "UPDATE posts SET title = ?, text = ? WHERE id = ?",
+                "UPDATE posts SET title = ?, text = ?, tags = ? WHERE id = ?",
                 post.getText(),
                 post.getTitle(),
+                toArray(post.getTags()),
                 post.getId()
         );
+    }
+    
+    private String[] toArray(List<String> list) {
+        return list == null ? null : list.toArray(new String[0]);
     }
 }

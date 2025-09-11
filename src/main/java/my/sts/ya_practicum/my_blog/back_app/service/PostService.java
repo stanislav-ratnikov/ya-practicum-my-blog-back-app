@@ -82,6 +82,7 @@ public class PostService {
 
         post.setText(postDto.getText());
         post.setTitle(postDto.getTitle());
+        post.setTags(postDto.getTags());
 
         postRepository.update(post);
 
