@@ -93,4 +93,8 @@ public class PostService {
         commentService.deleteByPostId(postId);
         postRepository.deletePost(postId);
     }
+
+    public Long incrementLikesCount(Long postId) {
+        return postRepository.incrementLikes(postId);
+    }
 }

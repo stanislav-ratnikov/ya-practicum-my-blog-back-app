@@ -26,7 +26,7 @@ public class PostRepositoryImpl implements PostRepository {
         post.setTitle(rs.getString("title"));
         post.setText(rs.getString("text"));
         post.setTags(List.of((String[]) rs.getArray("tags").getArray()));
-        post.setLikesCount(rs.getLong("like_count"));
+        post.setLikesCount(rs.getLong("likes_count"));
 
         return post;
     };
@@ -115,5 +115,12 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public void deletePost(long postId) {
         jdbcTemplate.update("DELETE FROM posts WHERE id = ?", postId);
+    }
+
+    @Override
+    public Long incrementLikes(long postId) {
+        String sql = "UPDATE posts SET likes_count = likes_count + 1 WHERE id = ? RETURNING likes_count";
+
+        return jdbcTemplate.queryForObject(sql, Long.class, postId);
     }
 }
