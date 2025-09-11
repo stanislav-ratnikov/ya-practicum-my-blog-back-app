@@ -3,6 +3,7 @@ package my.sts.ya_practicum.my_blog.back_app.controller;
 import my.sts.ya_practicum.my_blog.back_app.dto.CommentDto;
 import my.sts.ya_practicum.my_blog.back_app.service.CommentService;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,8 +50,12 @@ public class CommentController {
         return commentService.updateComment(postId, commentId, commentDto);
     }
 
-    @DeleteMapping
-    public void deleteComment(@PathVariable("postId") Long postId) {
+    @DeleteMapping(value = "/{commentId}")
+    public ResponseEntity<Void> deleteComment(@PathVariable("postId") Long postId,
+                                              @PathVariable("commentId") Long commentId
+    ) {
+        commentService.deleteComment(postId, commentId);
 
+        return ResponseEntity.ok().build();
     }
 }

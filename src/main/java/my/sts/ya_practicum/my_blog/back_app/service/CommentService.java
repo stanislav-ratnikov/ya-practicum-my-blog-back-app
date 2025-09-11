@@ -77,4 +77,8 @@ public class CommentService {
 
         return findComment(postId, commentId);
     }
+
+    public void deleteComment(Long postId, Long commentId) {
+        commentRepository.delete(postId, commentId);
+    }
 }

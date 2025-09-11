@@ -13,4 +13,5 @@ public interface CommentRepository {
     void deleteByPostId(Long postId);
     Long save(Comment comment);
     void update(Comment comment);
+    void delete(Long postId, Long commentId);
 }
