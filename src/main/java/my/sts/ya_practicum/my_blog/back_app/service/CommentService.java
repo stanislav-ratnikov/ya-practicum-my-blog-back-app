@@ -41,4 +41,12 @@ public class CommentService {
 
         commentRepository.deleteByPostId(postId);
     }
+
+    public CommentDto findComment(Long postId, Long commentId) {
+        if (postId == null) {
+            return null;
+        }
+
+        return CommentDtoMapper.map(commentRepository.findByPostIdAndCommentId(postId, commentId));
+    }
 }

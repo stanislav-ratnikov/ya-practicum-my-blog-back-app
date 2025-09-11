@@ -3,12 +3,16 @@ package my.sts.ya_practicum.my_blog.back_app.dao.impl;
 import my.sts.ya_practicum.my_blog.back_app.dao.PostRepository;
 import my.sts.ya_practicum.my_blog.back_app.model.Post;
 import my.sts.ya_practicum.my_blog.back_app.util.search.PostSearchCriteria;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,18 +22,6 @@ public class PostRepositoryImpl implements PostRepository {
 
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-    private final RowMapper<Post> postRowMapper = (rs, rowNum) -> {
-        Post post = new Post();
-
-        post.setId(rs.getLong("id"));
-        post.setTitle(rs.getString("title"));
-        post.setText(rs.getString("text"));
-        post.setTags(List.of((String[]) rs.getArray("tags").getArray()));
-        post.setLikesCount(rs.getLong("likes_count"));
-
-        return post;
-    };
 
     public PostRepositoryImpl(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -56,7 +48,19 @@ public class PostRepositoryImpl implements PostRepository {
         params.put("limit", pageSize);
         params.put("offset", (pageNumber - 1) * pageSize);
 
-        return namedParameterJdbcTemplate.query(sql, params, postRowMapper);
+        return namedParameterJdbcTemplate.query(sql, params, (rs, rowNum) -> extractPost(rs));
+    }
+
+    private Post extractPost(ResultSet rs) throws SQLException {
+        Post post = new Post();
+
+        post.setId(rs.getLong("id"));
+        post.setTitle(rs.getString("title"));
+        post.setText(rs.getString("text"));
+        post.setTags(List.of((String[]) rs.getArray("tags").getArray()));
+        post.setLikesCount(rs.getLong("likes_count"));
+
+        return post;
     }
 
     @Override
@@ -79,7 +83,11 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public Post findById(long id) {
-        return jdbcTemplate.queryForObject("SELECT * FROM posts WHERE id = ?", postRowMapper, id);
+        return jdbcTemplate.query(
+                "SELECT * FROM posts WHERE id = ?",
+                rs -> rs.next() ? extractPost(rs) : null,
+                id
+        );
     }
 
     @Override
