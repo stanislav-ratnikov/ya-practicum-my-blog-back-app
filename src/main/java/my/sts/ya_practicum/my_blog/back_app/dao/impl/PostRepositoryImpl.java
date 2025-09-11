@@ -28,7 +28,7 @@ public class PostRepositoryImpl implements PostRepository {
         String sql = """
                     SELECT *
                     FROM posts
-                    WHERE (:search::varchar IS NULL OR title LIKE :search) AND (:tags::TEXT[] IS NULL OR tags @> :tags::TEXT[])
+                    WHERE (:searchTitle = FALSE OR title LIKE :search) AND (:searchTags = FALSE OR tags @> :tags::TEXT[])
                     ORDER BY id
                     LIMIT :limit
                     OFFSET :offset
@@ -36,8 +36,10 @@ public class PostRepositoryImpl implements PostRepository {
 
         HashMap<String, Object> params = new HashMap<>();
 
+        params.put("searchTitle", searchCriteria.searchSubString() != null);
         params.put("search", searchCriteria.searchSubString() == null ? null : "%" + searchCriteria.searchSubString() + "%");
-        params.put("tags", searchCriteria.tags());
+        params.put("searchTags", searchCriteria.tags() != null);
+        params.put("tags", searchCriteria.tags() == null ? null : searchCriteria.tags().toArray(String[]::new));
         params.put("limit", pageSize);
         params.put("offset", (pageNumber - 1) * pageSize);
 
