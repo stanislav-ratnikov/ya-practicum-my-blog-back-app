@@ -13,7 +13,7 @@ import javax.sql.DataSource;
 public class DatabaseSchemaInitializer {
 
     private final DataSource dataSource;
-    private Resource schemaScript;
+    private final Resource schemaScript;
 
     public DatabaseSchemaInitializer(DataSource dataSource,
                                      @Value("classpath:schema.sql") Resource schemaScript) {
