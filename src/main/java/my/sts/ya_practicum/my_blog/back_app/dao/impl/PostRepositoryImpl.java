@@ -34,7 +34,7 @@ public class PostRepositoryImpl implements PostRepository {
                     SELECT *
                     FROM posts
                     WHERE (:searchTitle = FALSE OR title LIKE :search) AND (:searchTags = FALSE OR tags @> :tags::TEXT[])
-                    ORDER BY id
+                    ORDER BY id DESC
                     LIMIT :limit
                     OFFSET :offset
                     """;
