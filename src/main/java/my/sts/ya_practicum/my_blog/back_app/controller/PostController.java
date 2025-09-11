@@ -50,10 +50,10 @@ public class PostController {
     }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> deletePost(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deletePost(@PathVariable("id") Long id) {
         postService.deletePost(id);
 
-        return ResponseEntity.ok("ok");
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping(value = "/{id}/likes")
