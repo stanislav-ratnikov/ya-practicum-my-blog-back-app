@@ -9,17 +9,17 @@ import java.util.Map;
 
 public class PostDtoMapper {
 
-    public static List<PostDto> map(List<Post> posts, Map<Long, Long> commentCounts) {
+    public static List<PostDto> map(List<Post> posts, Map<Long, Long> commentsCountMap) {
         if (posts == null) {
             return Collections.emptyList();
         }
 
         return posts.stream()
-                .map(p -> map(p, commentCounts.get(p.getId())))
+                .map(p -> map(p, commentsCountMap.get(p.getId())))
                 .toList();
     }
 
-    public static PostDto map(Post post, Long commentCount) {
+    public static PostDto map(Post post, Long commentsCount) {
         if (post == null) {
             return null;
         }
@@ -30,8 +30,8 @@ public class PostDtoMapper {
         dto.setTitle(post.getTitle());
         dto.setText(post.getText());
         dto.setTags(post.getTags());
-        dto.setLikeCount(post.getLikeCount());
-        dto.setCommentCount(commentCount);
+        dto.setLikesCount(post.getLikesCount());
+        dto.setCommentsCount(commentsCount);
 
         return dto;
     }

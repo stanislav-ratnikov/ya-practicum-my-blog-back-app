@@ -36,13 +36,13 @@ public class PostService {
                 .map(Post::getId)
                 .toList();
 
-        Map<Long, Long> commentCounts = commentService.getCommentCounts(postIds);
+        Map<Long, Long> commentsCountMap = commentService.getCommentsCountByPostId(postIds);
 
         int lastPage = (int) Math.ceil((double) postsCount / pageSize);
 
         FindPostsResponseDto responseDto = new FindPostsResponseDto();
 
-        responseDto.setPosts(PostDtoMapper.map(posts, commentCounts));
+        responseDto.setPosts(PostDtoMapper.map(posts, commentsCountMap));
         responseDto.setHasPrev(pageNumber > 1);
         responseDto.setHasNext(pageNumber < lastPage);
         responseDto.setLastPage(lastPage);
@@ -52,9 +52,9 @@ public class PostService {
 
     public PostDto findById(Long id) {
         Post post = postRepository.findById(id);
-        Long commentCount = commentService.getCommentCounts(List.of(id)).get(id);
+        Long commentsCount = commentService.getCommentsCountByPostId(List.of(id)).get(id);
 
-        return PostDtoMapper.map(post, commentCount);
+        return PostDtoMapper.map(post, commentsCount);
     }
 
     public PostDto createPost(PostDto postDto) {

@@ -8,5 +8,5 @@ import java.util.Map;
 public interface CommentRepository {
 
     List<Comment> findByPostId(Long postId);
-    Map<Long, Long> getCommentCounts(List<Long> postIds);
+    Map<Long, Long> getCommentsCountByPostId(List<Long> postIds);
 }

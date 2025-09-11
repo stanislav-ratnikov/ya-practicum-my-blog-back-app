@@ -26,11 +26,11 @@ public class CommentService {
         return CommentDtoMapper.map(commentRepository.findByPostId(postId));
     }
 
-    public Map<Long, Long> getCommentCounts(List<Long> postIds) {
+    public Map<Long, Long> getCommentsCountByPostId(List<Long> postIds) {
         if (postIds == null || postIds.isEmpty()) {
             return Collections.emptyMap();
         }
 
-        return commentRepository.getCommentCounts(postIds);
+        return commentRepository.getCommentsCountByPostId(postIds);
     }
 }

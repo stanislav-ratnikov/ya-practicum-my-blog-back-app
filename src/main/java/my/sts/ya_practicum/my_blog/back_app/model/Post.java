@@ -12,5 +12,5 @@ public class Post {
     private String title;
     private String text;
     private List<String> tags;
-    private Long likeCount;
+    private Long likesCount;
 }

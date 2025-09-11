@@ -39,7 +39,7 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
     @Override
-    public Map<Long, Long> getCommentCounts(List<Long> postIds) {
+    public Map<Long, Long> getCommentsCountByPostId(List<Long> postIds) {
         String sql = """
                     SELECT p.id AS post_id, COUNT(c.id) AS comment_count
                     FROM posts p
