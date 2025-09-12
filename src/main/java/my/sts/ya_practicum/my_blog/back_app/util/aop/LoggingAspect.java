@@ -11,9 +11,9 @@ public class LoggingAspect {
 
     @Around("execution(* my.sts.ya_practicum.my_blog.back_app.dao..*.*(..))")
     public Object logDaoMethods(ProceedingJoinPoint joinPoint) throws Throwable {
-        long start = System.currentTimeMillis();
-
         System.out.println("[" + joinPoint.getSignature().toShortString() + "] executing..");
+
+        long start = System.currentTimeMillis();
 
         Object result = joinPoint.proceed();
 
