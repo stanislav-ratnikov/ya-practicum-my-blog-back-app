@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class LoggingAspect {
 
     @Around("execution(* my.sts.ya_practicum.my_blog.back_app.dao..*.*(..))")
-    public Object logDaoMethods(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object logDaoMethodsExecution(ProceedingJoinPoint joinPoint) throws Throwable {
         System.out.println("[" + joinPoint.getSignature().toShortString() + "] executing..");
 
         long start = System.currentTimeMillis();
