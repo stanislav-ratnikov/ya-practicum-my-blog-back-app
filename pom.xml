@@ -14,12 +14,13 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+        <aspectj.version>1.9.24</aspectj.version>
+        <lombok.version>1.18.40</lombok.version>
         <jackson.version>2.20.0</jackson.version>
         <jakarta.servlet-api.version>6.1.0</jakarta.servlet-api.version>
         <postgresql.version>42.7.7</postgresql.version>
         <spring.version>6.2.10</spring.version>
         <spring-data.version>3.5.3</spring-data.version>
-        <lombok.version>1.18.40</lombok.version>
     </properties>
 
     <dependencies>
@@ -27,6 +28,11 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
             <version>${spring.version}</version>
         </dependency>
         <dependency>
@@ -62,6 +68,13 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
+        </dependency>
+
+        <!--AspectJ-->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>${aspectj.version}</version>
         </dependency>
     </dependencies>
 
