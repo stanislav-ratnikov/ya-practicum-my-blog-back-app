@@ -8,7 +8,7 @@ import java.util.List;
 public interface PostRepository {
 
     List<Post> find(PostSearchCriteria searchCriteria, Integer pageNumber, Integer pageSize);
-    int count(PostSearchCriteria searchCriteria);
+    int countTotalPosts(PostSearchCriteria searchCriteria);
     Post findById(long id);
     Long save(Post post);
     void update(Post post);

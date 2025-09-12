@@ -28,9 +28,9 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<Post> find(PostSearchCriteria searchCriteria, Integer pageNumber, Integer pageSize) {
         String sql = """
-                    SELECT *
+                    SELECT *, COUNT(*) OVER() AS total_count
                     FROM posts
-                    WHERE (:searchTitle = FALSE OR title LIKE :search) AND (:searchTags = FALSE OR tags @> :tags::TEXT[])
+                    WHERE (:isSearchByTitle = FALSE OR title LIKE :title) AND (:isSearchByTags = FALSE OR tags @> :tags::TEXT[])
                     ORDER BY id DESC
                     LIMIT :limit
                     OFFSET :offset
@@ -38,9 +38,9 @@ public class PostRepositoryImpl implements PostRepository {
 
         HashMap<String, Object> params = new HashMap<>();
 
-        params.put("searchTitle", searchCriteria.searchSubString() != null);
-        params.put("search", searchCriteria.searchSubString() == null ? null : "%" + searchCriteria.searchSubString() + "%");
-        params.put("searchTags", searchCriteria.tags() != null);
+        params.put("isSearchByTitle", searchCriteria.search() != null);
+        params.put("title", searchCriteria.search() == null ? null : "%" + searchCriteria.search() + "%");
+        params.put("isSearchByTags", searchCriteria.tags() != null);
         params.put("tags", searchCriteria.tags() == null ? null : searchCriteria.tags().toArray(String[]::new));
         params.put("limit", pageSize);
         params.put("offset", (pageNumber - 1) * pageSize);
@@ -61,18 +61,18 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public int count(PostSearchCriteria searchCriteria) {
+    public int countTotalPosts(PostSearchCriteria searchCriteria) {
         String sql = """
                     SELECT count(*)
                     FROM posts
-                    WHERE (:searchTitle = FALSE OR title LIKE :search) AND (:searchTags = FALSE OR tags @> :tags::TEXT[])
+                    WHERE (:isSearchByTitle = FALSE OR title LIKE :title) AND (:isSearchByTags = FALSE OR tags @> :tags::TEXT[])
                     """;
 
         HashMap<String, Object> params = new HashMap<>();
 
-        params.put("searchTitle", searchCriteria.searchSubString() != null);
-        params.put("search", searchCriteria.searchSubString() == null ? null : "%" + searchCriteria.searchSubString() + "%");
-        params.put("searchTags", searchCriteria.tags() != null);
+        params.put("isSearchByTitle", searchCriteria.search() != null);
+        params.put("title", searchCriteria.search() == null ? null : "%" + searchCriteria.search() + "%");
+        params.put("isSearchByTags", searchCriteria.tags() != null);
         params.put("tags", toArray(searchCriteria.tags()));
 
         return namedParameterJdbcTemplate.queryForObject(sql, params, Integer.class);

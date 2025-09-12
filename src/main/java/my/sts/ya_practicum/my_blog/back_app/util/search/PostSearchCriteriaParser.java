@@ -8,7 +8,7 @@ public class PostSearchCriteriaParser {
 
     public static PostSearchCriteria parse(String searchString) {
         if (searchString == null) {
-            return null;
+            return new PostSearchCriteria(null, null);
         }
 
         String[] words = searchString.split("\\s+");

@@ -30,7 +30,7 @@ public class PostService {
     ) {
         PostSearchCriteria postSearchCriteria = PostSearchCriteriaParser.parse(search);
         List<Post> posts = postRepository.find(postSearchCriteria, pageNumber, pageSize);
-        int postsCount = postRepository.count(postSearchCriteria);
+        int postsTotalCount = postRepository.countTotalPosts(postSearchCriteria);
 
         List<Long> postIds = posts.stream()
                 .map(Post::getId)
@@ -38,7 +38,7 @@ public class PostService {
 
         Map<Long, Long> commentsCountMap = commentService.getCommentsCountByPostId(postIds);
 
-        int lastPage = (int) Math.ceil((double) postsCount / pageSize);
+        int lastPage = (int) Math.ceil((double) postsTotalCount / pageSize);
 
         FindPostsResponseDto responseDto = new FindPostsResponseDto();
 
