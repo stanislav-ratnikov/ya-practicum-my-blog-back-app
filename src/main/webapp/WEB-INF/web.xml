@@ -8,11 +8,9 @@
     <display-name>Spring-приложение, запускаемое в контейнере сервлетов</display-name>
 
     <servlet>
-        <!-- Имя и класс основного сервлета приложения-->
         <servlet-name>dispatcher</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 
-        <!-- Настройка Spring-контекста и Java-конфигурации -->
         <init-param>
             <param-name>contextClass</param-name>
             <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
@@ -29,7 +27,6 @@
         </multipart-config>
     </servlet>
 
-    <!-- DispatcherServlet обрабатывает все запросы -->
     <servlet-mapping>
         <servlet-name>dispatcher</servlet-name>
         <url-pattern>/</url-pattern>

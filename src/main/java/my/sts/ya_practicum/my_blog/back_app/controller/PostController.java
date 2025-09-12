@@ -4,6 +4,8 @@ import my.sts.ya_practicum.my_blog.back_app.dto.FindPostsResponseDto;
 import my.sts.ya_practicum.my_blog.back_app.dto.PostDto;
 import my.sts.ya_practicum.my_blog.back_app.service.PostService;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,11 +31,7 @@ public class PostController {
             @RequestParam(name = "pageNumber") Integer pageNumber,
             @RequestParam(name = "pageSize") Integer pageSize
     ) {
-        FindPostsResponseDto responseDto = new FindPostsResponseDto();
-
-        responseDto.setPosts(postService.findPosts(search, pageNumber, pageSize));
-
-        return responseDto;
+        return postService.findPosts(search, pageNumber, pageSize);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -49,5 +47,17 @@ public class PostController {
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public PostDto updatePost(@PathVariable("id") Long postId, @RequestBody PostDto post) {
         return postService.updatePost(postId, post);
+    }
+
+    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> deletePost(@PathVariable("id") Long id) {
+        postService.deletePost(id);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(value = "/{id}/likes")
+    public Long incrementLikes(@PathVariable("id") Long postId) {
+        return postService.incrementLikesCount(postId);
     }
 }

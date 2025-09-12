@@ -30,8 +30,6 @@ public class ImageService {
 
             return Files.readAllBytes(filePath);
         } catch (IOException e) {
-            e.printStackTrace();
-
             throw new RuntimeException(e.getMessage(), e);
         }
     }
@@ -48,8 +46,6 @@ public class ImageService {
 
             file.transferTo(filePath);
         } catch (IOException e) {
-            e.printStackTrace();
-
             throw new RuntimeException(e.getMessage(), e);
         }
     }

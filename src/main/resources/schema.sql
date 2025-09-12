@@ -1,34 +1,33 @@
-create table if not exists posts
+CREATE SCHEMA IF NOT EXISTS my_blog_back_app;
+
+SET search_path TO my_blog_back_app;
+
+DROP TABLE IF EXISTS comments;
+DROP TABLE IF EXISTS tags;
+DROP TABLE IF EXISTS posts;
+
+CREATE TABLE IF NOT EXISTS posts
 (
-    id bigserial primary key,
-    title varchar(256) not null,
-    text varchar(256) not null,
-    like_count bigint not null
+    id BIGSERIAL PRIMARY KEY,
+    title VARCHAR(256) NOT NULL,
+    "text" VARCHAR(256) NOT NULL,
+    tags TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[],
+    likes_count BIGINT NOT NULL DEFAULT 0
 );
 
-create table if not exists tags
+CREATE INDEX IF NOT EXISTS idx_posts_tags_gin ON posts USING GIN (tags);
+
+CREATE TABLE IF NOT EXISTS comments
 (
-    id bigserial primary key,
-    post_id bigint not null,
-    tag varchar(256) not null,
+    id BIGSERIAL PRIMARY KEY,
+    post_id BIGINT NOT NULL,
+    "text" VARCHAR(256) NOT NULL,
     FOREIGN KEY (post_id) REFERENCES posts(id)
 );
 
-CREATE INDEX idx_tags_post_id ON tags(post_id);
+CREATE INDEX IF NOT EXISTS idx_comments_post_id ON comments(post_id);
 
-create table if not exists comments
-(
-    id bigserial primary key,
-    post_id bigint not null,
-    text varchar(256) not null,
-    FOREIGN KEY (post_id) REFERENCES posts(id)
-);
+INSERT INTO posts(title, text, tags) VALUES ('пост1', 'пост1_текст', ARRAY['пост1_тег1']);
 
-CREATE INDEX idx_comments_post_id ON comments(post_id);
-
-insert into posts(title, text, like_count) values ('пост1', 'пост1_текст', 0);
-
-insert into tags(post_id, tag) values ((select id from posts where title = 'пост1'), 'пост1_тег1');
-
-insert into comments (post_id, text)
-values ((select id from posts where title = 'пост1'), 'пост1_комментарий1');
+INSERT INTO comments (post_id, text)
+VALUES ((SELECT id FROM posts WHERE title = 'пост1'), 'пост1_комментарий1');
