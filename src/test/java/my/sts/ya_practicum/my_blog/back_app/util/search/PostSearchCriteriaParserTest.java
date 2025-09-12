@@ -40,7 +40,7 @@ class PostSearchCriteriaParserTest {
     }
 
     @ParameterizedTest
-    @MethodSource("provideTestValues")
+    @MethodSource("validTestCases")
     public void givenValidString_whenParse_thenReturnValidResult(
             String inputString,
             String expectedSearch,
@@ -53,7 +53,7 @@ class PostSearchCriteriaParserTest {
         assertIterableEquals(expectedTags, searchCriteria.tags());
     }
 
-    private static Stream<Arguments> provideTestValues() {
+    private static Stream<Arguments> validTestCases() {
         return Stream.of(
                 Arguments.of("text1", "text1", null),
                 Arguments.of("#tag1", null, List.of("tag1")),
