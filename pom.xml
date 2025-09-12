@@ -18,6 +18,7 @@
         <lombok.version>1.18.40</lombok.version>
         <jackson.version>2.20.0</jackson.version>
         <jakarta.servlet-api.version>6.1.0</jakarta.servlet-api.version>
+        <junit.version>5.13.4</junit.version>
         <postgresql.version>42.7.7</postgresql.version>
         <spring.version>6.2.10</spring.version>
         <spring-data.version>3.5.3</spring-data.version>
@@ -75,6 +76,14 @@
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
             <version>${aspectj.version}</version>
+        </dependency>
+
+        <!--junit-->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
