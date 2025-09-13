@@ -69,7 +69,7 @@ class ImageControllerTest {
     }
 
     @Test
-    void shouldReturnNotFound_whenPostDoesNotExist() throws Exception {
+    void shouldReturnNotFound_whenUploadImage_andPostDoesNotExist() throws Exception {
         Long postId = 42L;
 
         MockMultipartFile mockImage = new MockMultipartFile(
@@ -96,7 +96,7 @@ class ImageControllerTest {
     }
 
     @Test
-    void shouldReturnImageBytes_whenImageExists() throws Exception {
+    void shouldReturnImageBytes_whenGetImage() throws Exception {
         Long postId = 42L;
         byte[] imageBytes = "fake-image-bytes".getBytes();
 
@@ -110,7 +110,7 @@ class ImageControllerTest {
     }
 
     @Test
-    void shouldReturnNotFoundWhenPostDoesNotExist() throws Exception {
+    void shouldReturnNotFound_whenGetImage_andPostDoesNotExist() throws Exception {
         Long postId = 42L;
 
         when(postService.exists(postId)).thenReturn(false);
@@ -122,7 +122,7 @@ class ImageControllerTest {
     }
 
     @Test
-    void shouldReturnNotFoundWhenImageIsEmpty() throws Exception {
+    void shouldReturnNotFound_whenGetImage_andImageDoesNotExist() throws Exception {
         Long postId = 42L;
 
         when(postService.exists(postId)).thenReturn(true);
