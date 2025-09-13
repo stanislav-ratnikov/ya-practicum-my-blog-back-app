@@ -2,7 +2,6 @@ package my.sts.ya_practicum.my_blog.back_app.controller;
 
 import my.sts.ya_practicum.my_blog.back_app.service.ImageService;
 import my.sts.ya_practicum.my_blog.back_app.service.PostService;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
