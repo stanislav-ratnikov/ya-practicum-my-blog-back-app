@@ -39,7 +39,6 @@ public class ImageController {
 
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_PNG)
-                .header(HttpHeaders.CACHE_CONTROL, "no-store")
                 .body(bytes);
     }
 
