@@ -175,9 +175,9 @@ class PostControllerIT {
     }
 
     @Test
-    public void deletePost_shouldReturnStatusOk_whenPostExists() throws Exception {
+    public void deletePost_shouldReturnStatusNoContent_whenSuccessfullyDeleted() throws Exception {
         mockMvc.perform(delete("/api/posts/{id}", 1).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 
     @Test

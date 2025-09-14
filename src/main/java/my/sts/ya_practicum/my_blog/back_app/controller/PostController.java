@@ -64,7 +64,7 @@ public class PostController {
 
         postService.deletePost(postId);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping(value = "/{id}/likes")
