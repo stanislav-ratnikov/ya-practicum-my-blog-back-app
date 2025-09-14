@@ -16,8 +16,11 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -114,6 +117,35 @@ class PostControllerIT {
                 jsonPath("$.tags.length()").value(2),
                 jsonPath("$.tags[0]").value("тест_пост2_тег1"),
                 jsonPath("$.tags[1]").value("тест_пост2_тег2")
+        );
+    }
+
+    @Test
+    public void shouldReturnValidResponse_whenUpdatePost() throws Exception {
+        PostDto postDto = new PostDto();
+
+        postDto.setTitle("тест_пост1 <updated>");
+        postDto.setText("тест_пост1_текст <updated>");
+        postDto.setLikesCount(42L);
+        postDto.setTags(List.of("тест_пост1_тег1", "тест_пост1_тег2"));
+
+        mockMvc.perform(
+                put("/api/posts/{id}", 1)
+                        .content(objectMapper.writeValueAsString(postDto))
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpectAll(
+                status().isOk(),
+                content().contentType(MediaType.APPLICATION_JSON),
+                jsonPath("$").isMap(),
+                jsonPath("$.id").value(1),
+                jsonPath("$.title").value("тест_пост1 <updated>"),
+                jsonPath("$.text").value("тест_пост1_текст <updated>"),
+                jsonPath("$.likesCount").value(42),
+                jsonPath("$.commentsCount").value(1),
+                jsonPath("$.tags").isArray(),
+                jsonPath("$.tags.length()").value(2),
+                jsonPath("$.tags[0]").value("тест_пост1_тег1"),
+                jsonPath("$.tags[1]").value("тест_пост1_тег2")
         );
     }
 }
