@@ -1,6 +1,8 @@
 package my.sts.ya_practicum.my_blog.back_app.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import my.sts.ya_practicum.my_blog.back_app.config.WebConfig;
+import my.sts.ya_practicum.my_blog.back_app.dto.PostDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +14,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.List;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -20,6 +25,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringJUnitWebConfig(WebConfig.class)
 @TestPropertySource("classpath:application-test.properties")
 class PostControllerIT {
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -78,6 +85,35 @@ class PostControllerIT {
                 jsonPath("$.tags").isArray(),
                 jsonPath("$.tags.length()").value(1),
                 jsonPath("$.tags[0]").value("тест_пост1_тег1")
+        );
+    }
+
+    @Test
+    public void createPost_shouldReturnCreatedPost_whenExecutedSuccessfully() throws Exception {
+        PostDto postDto = new PostDto();
+
+        postDto.setTitle("тест_пост2");
+        postDto.setText("тест_пост2_текст");
+        postDto.setLikesCount(2L);
+        postDto.setTags(List.of("тест_пост2_тег1", "тест_пост2_тег2"));
+
+        mockMvc.perform(
+                post("/api/posts")
+                        .content(objectMapper.writeValueAsString(postDto))
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpectAll(
+                status().isOk(),
+                content().contentType(MediaType.APPLICATION_JSON),
+                jsonPath("$").isMap(),
+                jsonPath("$.id").value(2),
+                jsonPath("$.title").value("тест_пост2"),
+                jsonPath("$.text").value("тест_пост2_текст"),
+                jsonPath("$.likesCount").value(2),
+                jsonPath("$.commentsCount").value(0),
+                jsonPath("$.tags").isArray(),
+                jsonPath("$.tags.length()").value(2),
+                jsonPath("$.tags[0]").value("тест_пост2_тег1"),
+                jsonPath("$.tags[1]").value("тест_пост2_тег2")
         );
     }
 }
