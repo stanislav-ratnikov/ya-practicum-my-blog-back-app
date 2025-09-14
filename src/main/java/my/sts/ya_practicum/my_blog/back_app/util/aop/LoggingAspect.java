@@ -3,10 +3,12 @@ package my.sts.ya_practicum.my_blog.back_app.util.aop;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
+@Conditional(EnableLoggingAspectCondition.class)
 public class LoggingAspect {
 
     @Around("execution(* my.sts.ya_practicum.my_blog.back_app.dao..*.*(..))")
