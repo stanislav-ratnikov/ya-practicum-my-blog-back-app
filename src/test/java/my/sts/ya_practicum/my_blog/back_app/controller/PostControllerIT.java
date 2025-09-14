@@ -45,9 +45,9 @@ class PostControllerIT {
         jdbcTemplate.update("TRUNCATE TABLE posts RESTART IDENTITY CASCADE");
         jdbcTemplate.update("INSERT INTO posts(title, text, tags) VALUES ('тест_пост1', 'тест_пост1_текст', ARRAY['тест_пост1_тег1'])");
         jdbcTemplate.update("""
-                            INSERT INTO comments (post_id, text)
-                            VALUES ((SELECT id FROM posts WHERE title = 'тест_пост1'), 'тест_пост1_комментарий1')
-                            """);
+                INSERT INTO comments (post_id, text)
+                VALUES ((SELECT id FROM posts WHERE title = 'тест_пост1'), 'тест_пост1_комментарий1')
+                """);
     }
 
     @Test
@@ -100,23 +100,24 @@ class PostControllerIT {
         postDto.setTags(List.of("тест_пост2_тег1", "тест_пост2_тег2"));
 
         mockMvc.perform(
-                post("/api/posts")
-                        .content(objectMapper.writeValueAsString(postDto))
-                        .contentType(MediaType.APPLICATION_JSON)
-        ).andExpectAll(
-                status().isOk(),
-                content().contentType(MediaType.APPLICATION_JSON),
-                jsonPath("$").isMap(),
-                jsonPath("$.id").value(2),
-                jsonPath("$.title").value("тест_пост2"),
-                jsonPath("$.text").value("тест_пост2_текст"),
-                jsonPath("$.likesCount").value(2),
-                jsonPath("$.commentsCount").value(0),
-                jsonPath("$.tags").isArray(),
-                jsonPath("$.tags.length()").value(2),
-                jsonPath("$.tags[0]").value("тест_пост2_тег1"),
-                jsonPath("$.tags[1]").value("тест_пост2_тег2")
-        );
+                        post("/api/posts")
+                                .content(objectMapper.writeValueAsString(postDto))
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpectAll(
+                        jsonPath("$").isMap(),
+                        jsonPath("$.id").value(2),
+                        jsonPath("$.title").value("тест_пост2"),
+                        jsonPath("$.text").value("тест_пост2_текст"),
+                        jsonPath("$.likesCount").value(2),
+                        jsonPath("$.commentsCount").value(0),
+                        jsonPath("$.tags").isArray(),
+                        jsonPath("$.tags.length()").value(2),
+                        jsonPath("$.tags[0]").value("тест_пост2_тег1"),
+                        jsonPath("$.tags[1]").value("тест_пост2_тег2")
+                );
     }
 
     @Test
