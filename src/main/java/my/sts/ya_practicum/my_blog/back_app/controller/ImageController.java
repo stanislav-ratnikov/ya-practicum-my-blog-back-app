@@ -2,6 +2,7 @@ package my.sts.ya_practicum.my_blog.back_app.controller;
 
 import my.sts.ya_practicum.my_blog.back_app.service.ImageService;
 import my.sts.ya_practicum.my_blog.back_app.service.PostService;
+import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,6 +39,7 @@ public class ImageController {
 
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_PNG)
+                .cacheControl(CacheControl.noStore())
                 .body(bytes);
     }
 
@@ -49,6 +51,6 @@ public class ImageController {
 
         imageService.uploadImage(postId, file);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }

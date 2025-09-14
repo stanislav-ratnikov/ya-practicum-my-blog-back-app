@@ -22,6 +22,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -63,7 +64,7 @@ class ImageControllerTest {
                             return request;
                         })
                         .contentType(MediaType.MULTIPART_FORM_DATA)
-        ).andExpect(status().isOk());
+        ).andExpect(status().isNoContent());
 
         verify(imageService, times(1)).uploadImage(any(), any());
     }
@@ -105,6 +106,7 @@ class ImageControllerTest {
 
         mockMvc.perform(get("/api/posts/{id}/image", postId))
                 .andExpect(status().isOk())
+                .andExpect(header().string("Cache-Control", "no-store"))
                 .andExpect(content().contentType(MediaType.IMAGE_PNG))
                 .andExpect(content().bytes(imageBytes));
     }
