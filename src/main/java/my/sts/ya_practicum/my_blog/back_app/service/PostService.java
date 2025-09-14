@@ -62,6 +62,7 @@ public class PostService {
 
         post.setTitle(postDto.getTitle());
         post.setText(postDto.getText());
+        post.setLikesCount(postDto.getLikesCount());
         post.setTags(postDto.getTags());
 
         Long postId = postRepository.save(post);
