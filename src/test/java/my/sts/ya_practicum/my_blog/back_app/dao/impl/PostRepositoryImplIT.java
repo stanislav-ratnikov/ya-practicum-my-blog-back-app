@@ -16,6 +16,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringJUnitConfig(classes = {DataSourceConfig.class, PostRepositoryImpl.class})
 @TestPropertySource(locations = "classpath:application-test.properties")
@@ -31,10 +33,6 @@ class PostRepositoryImplIT {
     void setup() {
         jdbcTemplate.update("TRUNCATE TABLE posts RESTART IDENTITY CASCADE");
         jdbcTemplate.update("INSERT INTO posts(title, text, tags) VALUES ('тест_пост1', 'тест_пост1_текст', ARRAY['тест_пост1_тег1'])");
-        jdbcTemplate.update("""
-                INSERT INTO comments (post_id, text)
-                VALUES ((SELECT id FROM posts WHERE title = 'тест_пост1'), 'тест_пост1_комментарий1')
-                """);
     }
 
     @Test
@@ -60,7 +58,7 @@ class PostRepositoryImplIT {
         assertEquals(0, post.getLikesCount());
         assertNotNull(post.getTags());
         assertEquals(1, post.getTags().size());
-        assertEquals("тест_пост1_тег1", post.getTags().get(0));
+        assertEquals("тест_пост1_тег1", post.getTags().getFirst());
     }
 
     @Test
@@ -119,5 +117,32 @@ class PostRepositoryImplIT {
         Post postUpdated = postRepository.findById(post.getId());
 
         validate(postUpdated, post, post.getId());
+    }
+
+    @Test
+    void deletePost_ShouldDeletePostSuccessfully() {
+        int postId = 1;
+
+        postRepository.deletePost(postId);
+
+        assertNull(postRepository.findById(postId));
+    }
+
+    @Test
+    void incrementLikes_shouldIncrementLikesCount_andReturnNewLikesCount_whenPostExists() {
+        Long likesCount = postRepository.incrementLikes(1L);
+        
+        assertNotNull(likesCount);
+        assertEquals(1L, likesCount);
+
+        Post post = postRepository.findById(1L);
+
+        assertNotNull(post);
+        assertEquals(likesCount, post.getLikesCount());
+    }
+
+    @Test
+    void exists_shouldReturnTrue_whenPostExists() {
+        assertTrue(postRepository.exists(1L));
     }
 }
