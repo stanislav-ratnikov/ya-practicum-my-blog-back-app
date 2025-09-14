@@ -56,7 +56,7 @@ public class PostController {
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> deletePost(@PathVariable("id") Long postId) {
         if (!postService.exists(postId)) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.notFound().build();
         }
 
         postService.deletePost(postId);
@@ -65,7 +65,13 @@ public class PostController {
     }
 
     @PostMapping(value = "/{id}/likes")
-    public Long incrementLikes(@PathVariable("id") Long postId) {
-        return postService.incrementLikesCount(postId);
+    public ResponseEntity<Long> incrementLikes(@PathVariable("id") Long postId) {
+        if (!postService.exists(postId)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Long likesCount = postService.incrementLikesCount(postId);
+
+        return ResponseEntity.ok(likesCount);
     }
 }

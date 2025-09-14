@@ -16,6 +16,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -119,7 +120,7 @@ class PostControllerIT {
     }
 
     @Test
-    public void shouldReturnValidResponse_whenUpdatePost() throws Exception {
+    public void updatePost_shouldReturnValidResponse_whenPostDtoIsValid() throws Exception {
         PostDto postDto = new PostDto();
 
         postDto.setId(1L);
@@ -146,5 +147,61 @@ class PostControllerIT {
                 jsonPath("$.tags[0]").value(postDto.getTags().get(0)),
                 jsonPath("$.tags[1]").value(postDto.getTags().get(1))
         );
+    }
+
+    @Test
+    public void updatePost_shouldReturnStatusNotFound_whenPostNotExists() throws Exception {
+        PostDto postDto = new PostDto();
+
+        postDto.setId(42L);
+        postDto.setTitle("тест_пост1 <updated>");
+        postDto.setText("тест_пост1_текст <updated>");
+        postDto.setLikesCount(42L);
+        postDto.setTags(List.of("тест_пост1_тег1", "тест_пост1_тег2"));
+
+        mockMvc.perform(
+                        put("/api/posts/{id}", 42)
+                                .content(objectMapper.writeValueAsString(postDto))
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void updatePost_shouldReturnStatusBadRequest_whenEmptyRequestBody() throws Exception {
+        mockMvc.perform(put("/api/posts/{id}", 1).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void deletePost_shouldReturnStatusOk_whenPostExists() throws Exception {
+        mockMvc.perform(delete("/api/posts/{id}", 1).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void deletePost_shouldReturnStatusNotFound_whenPostNotExists() throws Exception {
+        mockMvc.perform(delete("/api/posts/{id}", 42).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void incrementLikes_shouldReturnNewLikesCount_whenIncrementedSuccessfully() throws Exception {
+        mockMvc.perform(post("/api/posts/{id}/likes", 1))
+                .andExpectAll(
+                        status().isOk(),
+                        content().string(String.valueOf(1))
+                );
+
+        mockMvc.perform(post("/api/posts/{id}/likes", 1))
+                .andExpectAll(
+                        status().isOk(),
+                        content().string(String.valueOf(2))
+                );
+    }
+
+    @Test
+    public void incrementLikes_shouldReturnStatusNotFound_whenPostNotExist() throws Exception {
+        mockMvc.perform(post("/api/posts/{id}/likes", 42)).andExpect(status().isNotFound());
     }
 }
