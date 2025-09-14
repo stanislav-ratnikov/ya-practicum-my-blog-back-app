@@ -155,6 +155,7 @@ class PostControllerTest {
         postDto.setCommentsCount(10L);
         postDto.setTags(List.of("tag1", "tag2"));
 
+        when(postService.exists(any())).thenReturn(true);
         when(postService.updatePost(any(), any())).thenReturn(postDto);
 
         mockMvc.perform(
@@ -178,12 +179,15 @@ class PostControllerTest {
 
     @Test
     public void shouldReturnValidResponse_whenDeletePost() throws Exception {
+        when(postService.exists(any())).thenReturn(true);
+
         mockMvc.perform(delete("/api/posts/{id}", 42).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
     public void shouldReturnValidResponse_whenIncrementLikesCount() throws Exception {
+        when(postService.exists(any())).thenReturn(true);
         when(postService.incrementLikesCount(any())).thenReturn(100500L);
 
         mockMvc.perform(post("/api/posts/{id}/likes", 42).contentType(MediaType.APPLICATION_JSON))
