@@ -14,6 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringJUnitConfig(classes = {DataSourceConfig.class, PostRepositoryImpl.class})
@@ -74,5 +75,32 @@ class PostRepositoryImplIT {
         int totalPosts = postRepository.countTotalPosts(new PostSearchCriteria("nonexistent-title", List.of("nonexistent-tag")));
 
         assertEquals(0, totalPosts);
+    }
+
+    @Test
+    void savePost_shouldReturnedNewPostId_whenSavedSuccessfully() {
+        Post post = Post.builder()
+                .title("новый_пост")
+                .text("новый_пост_текст")
+                .likesCount(0L)
+                .tags(List.of())
+                .build();
+
+        Long postId = postRepository.save(post);
+
+        assertNotNull(postId);
+
+        Post savedPost = postRepository.findById(postId);
+
+        validate(savedPost, post, postId);
+    }
+
+    private void validate(Post post, Post expected, Long expectedId) {
+        assertNotNull(post);
+        assertEquals(expectedId, post.getId());
+        assertEquals(expected.getTitle(), post.getTitle());
+        assertEquals(expected.getText(), post.getText());
+        assertEquals(expected.getLikesCount(), post.getLikesCount());
+        assertIterableEquals(expected.getTags(), post.getTags());
     }
 }
