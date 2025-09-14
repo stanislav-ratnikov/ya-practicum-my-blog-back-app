@@ -130,7 +130,7 @@ class PostControllerTest {
                         .content(objectMapper.writeValueAsString(postDto))
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpectAll(
-                status().isOk(),
+                status().isCreated(),
                 content().contentType(MediaType.APPLICATION_JSON),
                 jsonPath("$").isMap(),
                 jsonPath("$.id").value(42),
@@ -182,7 +182,7 @@ class PostControllerTest {
         when(postService.exists(any())).thenReturn(true);
 
         mockMvc.perform(delete("/api/posts/{id}", 42).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 
     @Test
