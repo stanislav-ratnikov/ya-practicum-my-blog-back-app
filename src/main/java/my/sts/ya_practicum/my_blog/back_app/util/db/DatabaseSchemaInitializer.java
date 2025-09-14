@@ -13,19 +13,23 @@ import javax.sql.DataSource;
 public class DatabaseSchemaInitializer {
 
     private final DataSource dataSource;
-    private final Resource schemaScript;
+    private final Resource ddlScript;
+    private final Resource dmlScript;
 
-    public DatabaseSchemaInitializer(DataSource dataSource,
-                                     @Value("classpath:schema.sql") Resource schemaScript) {
+    public DatabaseSchemaInitializer(@Value("classpath:db/ddl.sql") Resource ddlScript,
+                                     @Value("classpath:db/dml.sql") Resource dmlScript,
+                                     DataSource dataSource) {
         this.dataSource = dataSource;
-        this.schemaScript = schemaScript;
+        this.ddlScript = ddlScript;
+        this.dmlScript = dmlScript;
     }
 
     @EventListener(ContextRefreshedEvent.class)
     public void populateDatabase() {
         ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator();
 
-        databasePopulator.addScript(schemaScript);
+        databasePopulator.addScripts(ddlScript, dmlScript);
+
         databasePopulator.execute(dataSource);
     }
 }
