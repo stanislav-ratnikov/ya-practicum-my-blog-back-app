@@ -16,8 +16,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -124,6 +122,7 @@ class PostControllerIT {
     public void shouldReturnValidResponse_whenUpdatePost() throws Exception {
         PostDto postDto = new PostDto();
 
+        postDto.setId(1L);
         postDto.setTitle("тест_пост1 <updated>");
         postDto.setText("тест_пост1_текст <updated>");
         postDto.setLikesCount(42L);
@@ -137,15 +136,15 @@ class PostControllerIT {
                 status().isOk(),
                 content().contentType(MediaType.APPLICATION_JSON),
                 jsonPath("$").isMap(),
-                jsonPath("$.id").value(1),
-                jsonPath("$.title").value("тест_пост1 <updated>"),
-                jsonPath("$.text").value("тест_пост1_текст <updated>"),
-                jsonPath("$.likesCount").value(42),
+                jsonPath("$.id").value(postDto.getId()),
+                jsonPath("$.title").value(postDto.getTitle()),
+                jsonPath("$.text").value(postDto.getText()),
+                jsonPath("$.likesCount").value(postDto.getLikesCount()),
                 jsonPath("$.commentsCount").value(1),
                 jsonPath("$.tags").isArray(),
-                jsonPath("$.tags.length()").value(2),
-                jsonPath("$.tags[0]").value("тест_пост1_тег1"),
-                jsonPath("$.tags[1]").value("тест_пост1_тег2")
+                jsonPath("$.tags.length()").value(postDto.getTags().size()),
+                jsonPath("$.tags[0]").value(postDto.getTags().get(0)),
+                jsonPath("$.tags[1]").value(postDto.getTags().get(1))
         );
     }
 }
