@@ -45,13 +45,21 @@ public class PostController {
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public PostDto updatePost(@PathVariable("id") Long postId, @RequestBody PostDto post) {
-        return postService.updatePost(postId, post);
+    public ResponseEntity<PostDto> updatePost(@PathVariable("id") Long postId, @RequestBody PostDto post) {
+        if (!postService.exists(postId)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(postService.updatePost(postId, post));
     }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> deletePost(@PathVariable("id") Long id) {
-        postService.deletePost(id);
+    public ResponseEntity<Void> deletePost(@PathVariable("id") Long postId) {
+        if (!postService.exists(postId)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        postService.deletePost(postId);
 
         return ResponseEntity.ok().build();
     }

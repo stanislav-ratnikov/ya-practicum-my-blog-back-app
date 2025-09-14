@@ -68,10 +68,6 @@ public class PostService {
     }
 
     public PostDto updatePost(Long postId, PostDto postDto) {
-        if (!postRepository.exists(postId)) {
-            return null;
-        }
-
         postRepository.update(PostDtoMapper.map(postDto));
 
         return findById(postId);
