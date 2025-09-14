@@ -35,4 +35,20 @@ public class PostDtoMapper {
 
         return dto;
     }
+
+    public static Post map(PostDto postDto) {
+        if (postDto == null) {
+            return null;
+        }
+
+        Post post = new Post();
+
+        post.setId(postDto.getId());
+        post.setTitle(postDto.getTitle());
+        post.setText(postDto.getText());
+        post.setLikesCount(postDto.getLikesCount());
+        post.setTags(postDto.getTags());
+
+        return post;
+    }
 }

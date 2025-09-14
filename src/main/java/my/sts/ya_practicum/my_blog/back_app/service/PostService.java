@@ -58,14 +58,7 @@ public class PostService {
     }
 
     public PostDto createPost(PostDto postDto) {
-        Post post = new Post();
-
-        post.setTitle(postDto.getTitle());
-        post.setText(postDto.getText());
-        post.setLikesCount(postDto.getLikesCount());
-        post.setTags(postDto.getTags());
-
-        Long postId = postRepository.save(post);
+        Long postId = postRepository.save(PostDtoMapper.map(postDto));
 
         return findById(postId);
     }
@@ -75,18 +68,11 @@ public class PostService {
     }
 
     public PostDto updatePost(Long postId, PostDto postDto) {
-        Post post = postRepository.findById(postId);
-
-        if (post == null) {
+        if (!postRepository.exists(postId)) {
             return null;
         }
 
-        post.setTitle(postDto.getTitle());
-        post.setText(postDto.getText());
-        post.setLikesCount(postDto.getLikesCount());
-        post.setTags(postDto.getTags());
-
-        postRepository.update(post);
+        postRepository.update(PostDtoMapper.map(postDto));
 
         return findById(postId);
     }

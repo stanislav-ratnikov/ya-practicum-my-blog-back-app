@@ -96,4 +96,30 @@ class PostDtoMapperTest {
                 Arguments.of(List.of(testPost), Map.of(testPost.getId(), testPostCommentsCount))
         );
     }
+
+    @Test
+    public void shouldReturnNull_whenPostDtoIsNull() {
+        assertNull(PostDtoMapper.map(null));
+    }
+
+    @Test
+    public void shouldReturnValidResult_whenPostDtoIsValid() {
+        PostDto postDto = new PostDto();
+
+        postDto.setId(42L);
+        postDto.setTitle("title");
+        postDto.setText("text");
+        postDto.setTags(List.of("tag1", "tag2"));
+        postDto.setLikesCount(123L);
+
+        Post result = PostDtoMapper.map(postDto);
+
+        assertNotNull(result);
+
+        assertEquals(postDto.getId(), result.getId());
+        assertEquals(postDto.getTitle(), result.getTitle());
+        assertEquals(postDto.getText(), result.getText());
+        assertEquals(postDto.getLikesCount(), result.getLikesCount());
+        assertIterableEquals(postDto.getTags(), result.getTags());
+    }
 }
