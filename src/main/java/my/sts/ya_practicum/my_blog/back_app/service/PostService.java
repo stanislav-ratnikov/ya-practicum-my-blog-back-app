@@ -81,8 +81,9 @@ public class PostService {
             return null;
         }
 
-        post.setText(postDto.getText());
         post.setTitle(postDto.getTitle());
+        post.setText(postDto.getText());
+        post.setLikesCount(postDto.getLikesCount());
         post.setTags(postDto.getTags());
 
         postRepository.update(post);

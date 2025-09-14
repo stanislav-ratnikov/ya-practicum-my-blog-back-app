@@ -106,9 +106,10 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public void update(Post post) {
         jdbcTemplate.update(
-                "UPDATE posts SET title = ?, text = ?, tags = ? WHERE id = ?",
-                post.getText(),
+                "UPDATE posts SET title = ?, text = ?, likes_count = ?, tags = ? WHERE id = ?",
                 post.getTitle(),
+                post.getText(),
+                post.getLikesCount(),
                 toArray(post.getTags()),
                 post.getId()
         );
