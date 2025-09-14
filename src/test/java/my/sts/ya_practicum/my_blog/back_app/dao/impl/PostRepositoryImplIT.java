@@ -103,4 +103,21 @@ class PostRepositoryImplIT {
         assertEquals(expected.getLikesCount(), post.getLikesCount());
         assertIterableEquals(expected.getTags(), post.getTags());
     }
+
+    @Test
+    void updatePost_shouldUpdatePostSuccessfully() {
+        Post post = Post.builder()
+                .id(1L)
+                .title("пост1_updated")
+                .text("пост1_текст_updated")
+                .likesCount(123L)
+                .tags(List.of("тег1_updated"))
+                .build();
+
+        postRepository.update(post);
+
+        Post postUpdated = postRepository.findById(post.getId());
+
+        validate(postUpdated, post, post.getId());
+    }
 }
