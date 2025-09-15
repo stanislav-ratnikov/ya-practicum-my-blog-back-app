@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
         @ContextConfiguration(classes = CommentRepositoryImpl.class),
 })
 @TestPropertySource(locations = "classpath:application-test.properties")
-public class CommentRepositoryIT {
+public class CommentRepositoryImplIT {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
