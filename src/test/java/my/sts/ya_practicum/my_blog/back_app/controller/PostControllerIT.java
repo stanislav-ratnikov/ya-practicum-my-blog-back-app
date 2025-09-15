@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource("classpath:application-test.properties")
 class PostControllerIT {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -53,7 +53,7 @@ class PostControllerIT {
     @Test
     public void getPosts_shouldReturnValidResults_whenPostWithCommentExists() throws Exception {
         mockMvc.perform(
-                get("/api/posts").contentType(MediaType.APPLICATION_JSON)
+                get("/api/posts")
                         .param("search", "")
                         .param("pageNumber", "1")
                         .param("pageSize", "5")
@@ -75,7 +75,7 @@ class PostControllerIT {
 
     @Test
     public void getPostById_shouldReturnValidResponse_whenPostWithCommentExists() throws Exception {
-        mockMvc.perform(get("/api/posts/{id}", 1).contentType(MediaType.APPLICATION_JSON)).andExpectAll(
+        mockMvc.perform(get("/api/posts/{id}", 1)).andExpectAll(
                 status().isOk(),
                 content().contentType(MediaType.APPLICATION_JSON),
                 jsonPath("$").isMap(),
@@ -176,13 +176,13 @@ class PostControllerIT {
 
     @Test
     public void deletePost_shouldReturnStatusNoContent_whenSuccessfullyDeleted() throws Exception {
-        mockMvc.perform(delete("/api/posts/{id}", 1).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(delete("/api/posts/{id}", 1))
                 .andExpect(status().isNoContent());
     }
 
     @Test
     public void deletePost_shouldReturnStatusNotFound_whenPostNotExists() throws Exception {
-        mockMvc.perform(delete("/api/posts/{id}", 42).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(delete("/api/posts/{id}", 42))
                 .andExpect(status().isNotFound());
     }
 
