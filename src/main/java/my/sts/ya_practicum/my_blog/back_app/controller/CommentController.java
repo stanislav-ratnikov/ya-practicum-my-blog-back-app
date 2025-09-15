@@ -2,6 +2,8 @@ package my.sts.ya_practicum.my_blog.back_app.controller;
 
 import my.sts.ya_practicum.my_blog.back_app.dto.CommentDto;
 import my.sts.ya_practicum.my_blog.back_app.service.CommentService;
+import my.sts.ya_practicum.my_blog.back_app.service.PostService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,42 +22,82 @@ import java.util.List;
 public class CommentController {
 
     private final CommentService commentService;
+    private final PostService postService;
 
-    public CommentController(CommentService commentService) {
+    public CommentController(CommentService commentService, PostService postService) {
         this.commentService = commentService;
+        this.postService = postService;
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<CommentDto> getComments(@PathVariable("postId") Long postId) {
-        return commentService.findCommentsByPostId(postId);
+    public ResponseEntity<List<CommentDto>> getComments(@PathVariable("postId") Long postId) {
+        if (!postService.exists(postId)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(commentService.findCommentsByPostId(postId));
     }
 
-    @GetMapping(value = "/{commentId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public CommentDto getComment(@PathVariable("postId") Long postId,
-                                 @PathVariable("commentId") Long commentId
+    @GetMapping(
+            value = "/{commentId}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<CommentDto> getComment(
+            @PathVariable("postId") Long postId,
+            @PathVariable("commentId") Long commentId
     ) {
-        return commentService.findComment(postId, commentId);
+        if (!postService.exists(postId)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        CommentDto comment = commentService.findComment(postId, commentId);
+
+        return ResponseEntity.ok(comment);
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public CommentDto createComment(@PathVariable("postId") Long postId, @RequestBody CommentDto commentDto) {
-        return commentService.createComment(postId, commentDto);
+    @PostMapping(
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<CommentDto> createComment(
+            @PathVariable("postId") Long postId,
+            @RequestBody CommentDto commentDto
+    ) {
+        if (!postService.exists(postId)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        CommentDto comment = commentService.createComment(postId, commentDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(comment);
     }
 
     @PutMapping(value = "/{commentId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public CommentDto updateComment(@PathVariable("postId") Long postId,
-                                    @PathVariable("commentId") Long commentId,
-                                    @RequestBody CommentDto commentDto
+    public ResponseEntity<CommentDto> updateComment(
+            @PathVariable("postId") Long postId,
+            @PathVariable("commentId") Long commentId,
+            @RequestBody CommentDto commentDto
     ) {
-        return commentService.updateComment(postId, commentId, commentDto);
+        if (!postService.exists(postId)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        CommentDto comment = commentService.updateComment(postId, commentId, commentDto);
+
+        return ResponseEntity.ok(comment);
     }
 
     @DeleteMapping(value = "/{commentId}")
-    public ResponseEntity<Void> deleteComment(@PathVariable("postId") Long postId,
-                                              @PathVariable("commentId") Long commentId
+    public ResponseEntity<Void> deleteComment(
+            @PathVariable("postId") Long postId,
+            @PathVariable("commentId") Long commentId
     ) {
+        if (!postService.exists(postId)) {
+            return ResponseEntity.notFound().build();
+        }
+
         commentService.deleteComment(postId, commentId);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }
