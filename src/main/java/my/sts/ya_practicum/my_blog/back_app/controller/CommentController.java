@@ -38,10 +38,7 @@ public class CommentController {
         return ResponseEntity.ok(commentService.findCommentsByPostId(postId));
     }
 
-    @GetMapping(
-            value = "/{commentId}",
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
+    @GetMapping(value = "/{commentId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommentDto> getComment(
             @PathVariable("postId") Long postId,
             @PathVariable("commentId") Long commentId
@@ -52,13 +49,14 @@ public class CommentController {
 
         CommentDto comment = commentService.findComment(postId, commentId);
 
+        if (comment == null) {
+            return ResponseEntity.notFound().build();
+        }
+
         return ResponseEntity.ok(comment);
     }
 
-    @PostMapping(
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommentDto> createComment(
             @PathVariable("postId") Long postId,
             @RequestBody CommentDto commentDto
@@ -83,6 +81,10 @@ public class CommentController {
         }
 
         CommentDto comment = commentService.updateComment(postId, commentId, commentDto);
+
+        if (comment == null) {
+            return ResponseEntity.notFound().build();
+        }
 
         return ResponseEntity.ok(comment);
     }

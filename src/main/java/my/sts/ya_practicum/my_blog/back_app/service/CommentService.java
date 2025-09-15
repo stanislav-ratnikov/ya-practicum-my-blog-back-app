@@ -63,8 +63,6 @@ public class CommentService {
     }
 
     public CommentDto updateComment(Long postId, Long commentId, CommentDto commentDto) {
-        // todo: check if post exists
-
         Comment comment = commentRepository.findByPostIdAndCommentId(postId, commentId);
 
         if (comment == null) {
