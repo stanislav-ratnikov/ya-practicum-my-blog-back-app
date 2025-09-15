@@ -5,10 +5,13 @@ import my.sts.ya_practicum.my_blog.back_app.dao.CommentRepository;
 import my.sts.ya_practicum.my_blog.back_app.model.Comment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.ContextHierarchy;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
 import java.util.Map;
@@ -18,7 +21,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringJUnitConfig(classes = {DataSourceConfig.class, CommentRepositoryImpl.class})
+@ExtendWith(SpringExtension.class)
+@ContextHierarchy({
+        @ContextConfiguration(classes = DataSourceConfig.class),
+        @ContextConfiguration(classes = CommentRepositoryImpl.class),
+})
 @TestPropertySource(locations = "classpath:application-test.properties")
 public class CommentRepositoryIT {
 
