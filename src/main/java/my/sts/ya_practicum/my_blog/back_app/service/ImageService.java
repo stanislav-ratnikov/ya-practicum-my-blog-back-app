@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 @Service
 public class ImageService {
 
-    public static final String UPLOAD_DIR = "uploads/";
+    public static final String IMAGE_UPLOAD_DIRECTORY = "uploads/";
 
     private final ServletContext servletContext;
 
@@ -22,7 +22,7 @@ public class ImageService {
 
     public byte[] getImage(Long postId) {
         try {
-            Path filePath = Paths.get(servletContext.getRealPath(UPLOAD_DIR)).resolve(postId.toString()).normalize();
+            Path filePath = Paths.get(servletContext.getRealPath(IMAGE_UPLOAD_DIRECTORY)).resolve(postId.toString()).normalize();
 
             if (!filePath.toFile().exists()) {
                 return null;
@@ -36,7 +36,7 @@ public class ImageService {
 
     public void uploadImage(Long postId, MultipartFile file) {
         try {
-            Path uploadDir = Paths.get(servletContext.getRealPath(UPLOAD_DIR));
+            Path uploadDir = Paths.get(servletContext.getRealPath(IMAGE_UPLOAD_DIRECTORY));
 
             if (!Files.exists(uploadDir)) {
                 Files.createDirectories(uploadDir);
