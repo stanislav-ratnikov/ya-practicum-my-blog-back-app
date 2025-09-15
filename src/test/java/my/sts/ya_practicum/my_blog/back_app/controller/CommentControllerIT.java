@@ -6,7 +6,6 @@ import my.sts.ya_practicum.my_blog.back_app.dto.CommentDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
@@ -38,7 +37,7 @@ public class CommentControllerIT {
     private MockMvc mockMvc;
 
     @BeforeEach
-    void setUp(ApplicationContext context) {
+    void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 
         jdbcTemplate.update("TRUNCATE TABLE posts RESTART IDENTITY CASCADE");
