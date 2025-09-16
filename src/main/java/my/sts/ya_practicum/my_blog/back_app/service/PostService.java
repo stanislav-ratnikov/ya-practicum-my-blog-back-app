@@ -4,6 +4,7 @@ import my.sts.ya_practicum.my_blog.back_app.dao.PostRepository;
 import my.sts.ya_practicum.my_blog.back_app.dto.FindPostsResponseDto;
 import my.sts.ya_practicum.my_blog.back_app.dto.PostDto;
 import my.sts.ya_practicum.my_blog.back_app.model.Post;
+import my.sts.ya_practicum.my_blog.back_app.util.mapper.FindPostsResponseDtoMapper;
 import my.sts.ya_practicum.my_blog.back_app.util.mapper.PostDtoMapper;
 import my.sts.ya_practicum.my_blog.back_app.util.search.PostSearchCriteria;
 import my.sts.ya_practicum.my_blog.back_app.util.search.PostSearchCriteriaParser;
@@ -29,6 +30,7 @@ public class PostService {
             Integer pageSize
     ) {
         PostSearchCriteria postSearchCriteria = PostSearchCriteriaParser.parse(search);
+
         List<Post> posts = postRepository.find(postSearchCriteria, pageNumber, pageSize);
         int postsTotalCount = postRepository.countTotalPosts(postSearchCriteria);
 
@@ -36,18 +38,15 @@ public class PostService {
                 .map(Post::getId)
                 .toList();
 
-        Map<Long, Long> commentsCountMap = commentService.getCommentsCountByPostId(postIds);
+        Map<Long, Long> postCommentsCounts = commentService.getCommentsCountByPostId(postIds);
 
-        int lastPage = (int) Math.ceil((double) postsTotalCount / pageSize);
-
-        FindPostsResponseDto responseDto = new FindPostsResponseDto();
-
-        responseDto.setPosts(PostDtoMapper.map(posts, commentsCountMap));
-        responseDto.setHasPrev(pageNumber > 1);
-        responseDto.setHasNext(pageNumber < lastPage);
-        responseDto.setLastPage(lastPage);
-
-        return responseDto;
+        return FindPostsResponseDtoMapper.map(
+                posts,
+                postCommentsCounts,
+                postsTotalCount,
+                pageNumber,
+                pageSize
+        );
     }
 
     public PostDto findById(Long id) {

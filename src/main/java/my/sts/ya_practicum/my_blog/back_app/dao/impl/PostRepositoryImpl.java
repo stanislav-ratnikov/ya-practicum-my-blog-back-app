@@ -28,7 +28,7 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<Post> find(PostSearchCriteria searchCriteria, Integer pageNumber, Integer pageSize) {
         String sql = """
-                    SELECT *, COUNT(*) OVER() AS total_count
+                    SELECT *
                     FROM posts
                     WHERE (:isSearchByTitle = FALSE OR title LIKE :title) AND (:isSearchByTags = FALSE OR tags @> :tags::TEXT[])
                     ORDER BY id DESC
