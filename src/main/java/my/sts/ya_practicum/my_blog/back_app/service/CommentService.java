@@ -1,9 +1,9 @@
 package my.sts.ya_practicum.my_blog.back_app.service;
 
-import my.sts.ya_practicum.my_blog.back_app.dao.CommentRepository;
-import my.sts.ya_practicum.my_blog.back_app.dto.CommentDto;
-import my.sts.ya_practicum.my_blog.back_app.model.Comment;
-import my.sts.ya_practicum.my_blog.back_app.util.mapper.CommentDtoMapper;
+import my.sts.ya_practicum.my_blog.back_app.persistence.repository.CommentRepository;
+import my.sts.ya_practicum.my_blog.back_app.web.dto.CommentDto;
+import my.sts.ya_practicum.my_blog.back_app.persistence.model.Comment;
+import my.sts.ya_practicum.my_blog.back_app.service.util.mapper.CommentDtoMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;

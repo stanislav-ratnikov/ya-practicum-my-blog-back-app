@@ -1,9 +1,9 @@
 package my.sts.ya_practicum.my_blog.back_app.service;
 
-import my.sts.ya_practicum.my_blog.back_app.dao.PostRepository;
-import my.sts.ya_practicum.my_blog.back_app.dto.FindPostsResponseDto;
-import my.sts.ya_practicum.my_blog.back_app.dto.PostDto;
-import my.sts.ya_practicum.my_blog.back_app.model.Post;
+import my.sts.ya_practicum.my_blog.back_app.persistence.repository.PostRepository;
+import my.sts.ya_practicum.my_blog.back_app.web.dto.FindPostsResponseDto;
+import my.sts.ya_practicum.my_blog.back_app.web.dto.PostDto;
+import my.sts.ya_practicum.my_blog.back_app.persistence.model.Post;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
