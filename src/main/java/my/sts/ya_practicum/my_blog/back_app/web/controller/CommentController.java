@@ -2,10 +2,13 @@ package my.sts.ya_practicum.my_blog.back_app.web.controller;
 
 import my.sts.ya_practicum.my_blog.back_app.service.CommentService;
 import my.sts.ya_practicum.my_blog.back_app.web.dto.CommentDto;
+import my.sts.ya_practicum.my_blog.back_app.web.validation.Create;
+import my.sts.ya_practicum.my_blog.back_app.web.validation.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,7 +47,7 @@ public class CommentController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommentDto> createComment(
             @PathVariable("postId") Long postId,
-            @RequestBody CommentDto commentDto
+            @RequestBody @Validated(Create.class) CommentDto commentDto
     ) {
         CommentDto comment = commentService.createComment(postId, commentDto);
 
@@ -55,7 +58,7 @@ public class CommentController {
     public CommentDto updateComment(
             @PathVariable("postId") Long postId,
             @PathVariable("commentId") Long commentId,
-            @RequestBody CommentDto commentDto
+            @RequestBody @Validated(Update.class) CommentDto commentDto
     ) {
         return commentService.updateComment(postId, commentId, commentDto);
     }

@@ -9,7 +9,10 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-@Import(MultipartConfiguration.class)
+@Import({
+        MultipartConfiguration.class,
+        ValidationConfig.class
+})
 @EnableWebMvc
 @ComponentScan(basePackages = "my.sts.ya_practicum.my_blog.back_app.web")
 public class WebAppConfig implements WebMvcConfigurer {

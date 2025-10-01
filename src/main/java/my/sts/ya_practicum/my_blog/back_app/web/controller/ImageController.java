@@ -1,7 +1,6 @@
 package my.sts.ya_practicum.my_blog.back_app.web.controller;
 
 import my.sts.ya_practicum.my_blog.back_app.service.ImageService;
-import my.sts.ya_practicum.my_blog.back_app.service.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;

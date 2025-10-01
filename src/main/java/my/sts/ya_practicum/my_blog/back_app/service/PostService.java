@@ -2,6 +2,7 @@ package my.sts.ya_practicum.my_blog.back_app.service;
 
 import my.sts.ya_practicum.my_blog.back_app.persistence.repository.CommentRepository;
 import my.sts.ya_practicum.my_blog.back_app.persistence.repository.PostRepository;
+import my.sts.ya_practicum.my_blog.back_app.service.exception.InvalidRequestException;
 import my.sts.ya_practicum.my_blog.back_app.service.exception.ResourceNotFoundException;
 import my.sts.ya_practicum.my_blog.back_app.web.dto.FindPostsResponseDto;
 import my.sts.ya_practicum.my_blog.back_app.web.dto.PostDto;
@@ -13,8 +14,10 @@ import my.sts.ya_practicum.my_blog.back_app.service.util.search.PostSearchCriter
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class PostService {
@@ -48,7 +51,9 @@ public class PostService {
                 .map(Post::getId)
                 .toList();
 
-        Map<Long, Long> postCommentsCounts = commentRepository.getCommentsCountByPostId(postIds);
+        Map<Long, Long> postCommentsCounts = !postIds.isEmpty()
+                ? commentRepository.getCommentsCountByPostId(postIds)
+                : Collections.emptyMap();
 
         return FindPostsResponseDtoMapper.map(
                 posts,
@@ -78,6 +83,10 @@ public class PostService {
     }
 
     public PostDto updatePost(Long postId, PostDto postDto) {
+        if (!Objects.equals(postId, postDto.getId())) {
+            throw new InvalidRequestException();
+        }
+
         postValidationService.validateIsPostExists(postId);
         postRepository.update(PostDtoMapper.map(postDto));
 

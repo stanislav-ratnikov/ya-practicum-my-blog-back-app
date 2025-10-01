@@ -1,12 +1,15 @@
 package my.sts.ya_practicum.my_blog.back_app.web.controller;
 
+import my.sts.ya_practicum.my_blog.back_app.service.PostService;
 import my.sts.ya_practicum.my_blog.back_app.web.dto.FindPostsResponseDto;
 import my.sts.ya_practicum.my_blog.back_app.web.dto.PostDto;
-import my.sts.ya_practicum.my_blog.back_app.service.PostService;
+import my.sts.ya_practicum.my_blog.back_app.web.validation.Create;
+import my.sts.ya_practicum.my_blog.back_app.web.validation.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,14 +46,17 @@ public class PostController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PostDto> createPost(@RequestBody PostDto post) {
+    public ResponseEntity<PostDto> createPost(@RequestBody @Validated(Create.class) PostDto post) {
         PostDto result = postService.createPost(post);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public PostDto updatePost(@PathVariable("id") Long postId, @RequestBody PostDto post) {
+    public PostDto updatePost(
+            @PathVariable("id") Long postId,
+            @RequestBody @Validated(Update.class) PostDto post
+    ) {
         return postService.updatePost(postId, post);
     }
 

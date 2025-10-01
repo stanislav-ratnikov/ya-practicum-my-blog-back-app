@@ -2,14 +2,15 @@ package my.sts.ya_practicum.my_blog.back_app.service;
 
 import my.sts.ya_practicum.my_blog.back_app.persistence.model.Comment;
 import my.sts.ya_practicum.my_blog.back_app.persistence.repository.CommentRepository;
+import my.sts.ya_practicum.my_blog.back_app.service.exception.InvalidRequestException;
 import my.sts.ya_practicum.my_blog.back_app.service.exception.ResourceNotFoundException;
 import my.sts.ya_practicum.my_blog.back_app.service.util.mapper.CommentDtoMapper;
 import my.sts.ya_practicum.my_blog.back_app.web.dto.CommentDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class CommentService {
@@ -24,20 +25,12 @@ public class CommentService {
     }
 
     public List<CommentDto> findCommentsByPostId(Long postId) {
-        if (postId == null) {
-            return Collections.emptyList();
-        }
-
         postValidationService.validateIsPostExists(postId);
 
         return CommentDtoMapper.map(commentRepository.findByPostId(postId));
     }
 
     public CommentDto findComment(Long postId, Long commentId) {
-        if (postId == null) {
-            return null;
-        }
-
         postValidationService.validateIsPostExists(postId);
 
         Comment comment = commentRepository.findByPostIdAndCommentId(postId, commentId);
@@ -50,6 +43,10 @@ public class CommentService {
     }
 
     public CommentDto createComment(Long postId, CommentDto commentDto) {
+        if (!Objects.equals(postId, commentDto.getPostId())) {
+            throw new InvalidRequestException();
+        }
+
         postValidationService.validateIsPostExists(postId);
 
         Comment comment = new Comment();
@@ -63,6 +60,10 @@ public class CommentService {
     }
 
     public CommentDto updateComment(Long postId, Long commentId, CommentDto commentDto) {
+        if (!Objects.equals(postId, commentDto.getPostId()) || !Objects.equals(commentId,  commentDto.getId())) {
+            throw new InvalidRequestException();
+        }
+
         postValidationService.validateIsPostExists(postId);
 
         Comment comment = commentRepository.findByPostIdAndCommentId(postId, commentId);
