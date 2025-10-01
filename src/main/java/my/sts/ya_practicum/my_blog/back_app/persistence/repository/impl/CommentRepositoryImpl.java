@@ -2,6 +2,7 @@ package my.sts.ya_practicum.my_blog.back_app.persistence.repository.impl;
 
 import my.sts.ya_practicum.my_blog.back_app.persistence.repository.CommentRepository;
 import my.sts.ya_practicum.my_blog.back_app.persistence.model.Comment;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -19,6 +20,7 @@ public class CommentRepositoryImpl implements CommentRepository {
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
+    @Autowired
     public CommentRepositoryImpl(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;

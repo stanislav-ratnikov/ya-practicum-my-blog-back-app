@@ -1,6 +1,8 @@
 package my.sts.ya_practicum.my_blog.back_app.service;
 
+import my.sts.ya_practicum.my_blog.back_app.persistence.repository.CommentRepository;
 import my.sts.ya_practicum.my_blog.back_app.persistence.repository.PostRepository;
+import my.sts.ya_practicum.my_blog.back_app.service.exception.ResourceNotFoundException;
 import my.sts.ya_practicum.my_blog.back_app.web.dto.FindPostsResponseDto;
 import my.sts.ya_practicum.my_blog.back_app.web.dto.PostDto;
 import my.sts.ya_practicum.my_blog.back_app.persistence.model.Post;
@@ -8,6 +10,7 @@ import my.sts.ya_practicum.my_blog.back_app.service.util.mapper.FindPostsRespons
 import my.sts.ya_practicum.my_blog.back_app.service.util.mapper.PostDtoMapper;
 import my.sts.ya_practicum.my_blog.back_app.service.util.search.PostSearchCriteria;
 import my.sts.ya_practicum.my_blog.back_app.service.util.search.PostSearchCriteriaParser;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,11 +20,18 @@ import java.util.Map;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final CommentService commentService;
+    private final PostValidationService postValidationService;
+    private final CommentRepository commentRepository;
 
-    public PostService(PostRepository postRepository, CommentService commentService) {
+    @Autowired
+    public PostService(
+            PostRepository postRepository,
+            PostValidationService postValidationService,
+            CommentRepository commentRepository
+    ) {
         this.postRepository = postRepository;
-        this.commentService = commentService;
+        this.postValidationService = postValidationService;
+        this.commentRepository = commentRepository;
     }
 
     public FindPostsResponseDto findPosts(
@@ -38,7 +48,7 @@ public class PostService {
                 .map(Post::getId)
                 .toList();
 
-        Map<Long, Long> postCommentsCounts = commentService.getCommentsCountByPostId(postIds);
+        Map<Long, Long> postCommentsCounts = commentRepository.getCommentsCountByPostId(postIds);
 
         return FindPostsResponseDtoMapper.map(
                 posts,
@@ -51,7 +61,12 @@ public class PostService {
 
     public PostDto findById(Long id) {
         Post post = postRepository.findById(id);
-        Long commentsCount = commentService.getCommentsCountByPostId(List.of(id)).get(id);
+
+        if (post == null) {
+            throw new ResourceNotFoundException();
+        }
+
+        Long commentsCount = commentRepository.getCommentsCountByPostId(List.of(id)).get(id);
 
         return PostDtoMapper.map(post, commentsCount);
     }
@@ -62,22 +77,22 @@ public class PostService {
         return findById(postId);
     }
 
-    public boolean exists(Long id) {
-        return postRepository.exists(id);
-    }
-
     public PostDto updatePost(Long postId, PostDto postDto) {
+        postValidationService.validateIsPostExists(postId);
         postRepository.update(PostDtoMapper.map(postDto));
 
         return findById(postId);
     }
 
     public void deletePost(Long postId) {
-        commentService.deleteByPostId(postId);
+        postValidationService.validateIsPostExists(postId);
+        commentRepository.deleteByPostId(postId);
         postRepository.deletePost(postId);
     }
 
     public Long incrementLikesCount(Long postId) {
+        postValidationService.validateIsPostExists(postId);
+
         return postRepository.incrementLikes(postId);
     }
 }

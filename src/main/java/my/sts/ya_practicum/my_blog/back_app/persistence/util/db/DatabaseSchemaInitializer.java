@@ -1,5 +1,6 @@
 package my.sts.ya_practicum.my_blog.back_app.persistence.util.db;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
@@ -16,6 +17,7 @@ public class DatabaseSchemaInitializer {
     private final Resource ddlScript;
     private final Resource dmlScript;
 
+    @Autowired
     public DatabaseSchemaInitializer(@Value("classpath:db/ddl.sql") Resource ddlScript,
                                      @Value("classpath:db/dml.sql") Resource dmlScript,
                                      DataSource dataSource) {

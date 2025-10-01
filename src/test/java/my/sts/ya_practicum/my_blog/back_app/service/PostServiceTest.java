@@ -1,9 +1,10 @@
 package my.sts.ya_practicum.my_blog.back_app.service;
 
+import my.sts.ya_practicum.my_blog.back_app.persistence.model.Post;
+import my.sts.ya_practicum.my_blog.back_app.persistence.repository.CommentRepository;
 import my.sts.ya_practicum.my_blog.back_app.persistence.repository.PostRepository;
 import my.sts.ya_practicum.my_blog.back_app.web.dto.FindPostsResponseDto;
 import my.sts.ya_practicum.my_blog.back_app.web.dto.PostDto;
-import my.sts.ya_practicum.my_blog.back_app.persistence.model.Post;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -31,10 +32,13 @@ class PostServiceTest {
             .build();
 
     @Mock
+    private PostValidationService postValidationService;
+
+    @Mock
     private PostRepository postRepository;
 
     @Mock
-    private CommentService commentService;
+    private CommentRepository commentRepository;
 
     @InjectMocks
     private PostService postService;
@@ -43,7 +47,7 @@ class PostServiceTest {
     void findPosts_shouldReturnValidResponseDto_whenPostsFound() {
         when(postRepository.find(any(), any(), any())).thenReturn(List.of(testPost));
         when(postRepository.countTotalPosts(any())).thenReturn(1);
-        when(commentService.getCommentsCountByPostId(any())).thenReturn(new HashMap<>(){
+        when(commentRepository.getCommentsCountByPostId(any())).thenReturn(new HashMap<>(){
             {
                 put(testPost.getId(), 1L);
             }
@@ -70,7 +74,7 @@ class PostServiceTest {
     @Test
     void findById_shouldReturnPostDto_whenPostFound() {
         when(postRepository.findById(1L)).thenReturn(testPost);
-        when(commentService.getCommentsCountByPostId(List.of(1L))).thenReturn(new HashMap<>(){
+        when(commentRepository.getCommentsCountByPostId(List.of(1L))).thenReturn(new HashMap<>(){
             {
                 put(1L, 1L);
             }
@@ -85,7 +89,7 @@ class PostServiceTest {
     void createPost_shouldReturnPostDto_whenSavedAndLoadedSuccessfully() {
         when(postRepository.save(any())).thenReturn(1L);
         when(postRepository.findById(1L)).thenReturn(testPost);
-        when(commentService.getCommentsCountByPostId(any())).thenReturn(new HashMap<>(){
+        when(commentRepository.getCommentsCountByPostId(any())).thenReturn(new HashMap<>(){
             {
                 put(testPost.getId(), 1L);
             }
@@ -98,23 +102,23 @@ class PostServiceTest {
 
     @Test
     void updatePost_shouldReturnPostDto_whenUpdatedAndLoadedSuccessfully() {
-        when(postRepository.findById(1L)).thenReturn(testPost);
-        when(commentService.getCommentsCountByPostId(any())).thenReturn(new HashMap<>(){
+        when(postRepository.findById(testPost.getId())).thenReturn(testPost);
+        when(commentRepository.getCommentsCountByPostId(any())).thenReturn(new HashMap<>(){
             {
                 put(testPost.getId(), 1L);
             }
         });
 
-        PostDto result = postService.updatePost(1L, new PostDto());
+        PostDto result = postService.updatePost(testPost.getId(), new PostDto());
 
         validate(result, testPost);
     }
 
     @Test
     void incrementLikesCount_shouldReturnLikesCount_whenIncrementedSuccessfully() {
-        when(postRepository.incrementLikes(1L)).thenReturn(123L);
+        when(postRepository.incrementLikes(testPost.getId())).thenReturn(123L);
 
-        Long likesCount = postService.incrementLikesCount(1L);
+        Long likesCount = postService.incrementLikesCount(testPost.getId());
 
         assertNotNull(likesCount);
         assertEquals(123L, likesCount);

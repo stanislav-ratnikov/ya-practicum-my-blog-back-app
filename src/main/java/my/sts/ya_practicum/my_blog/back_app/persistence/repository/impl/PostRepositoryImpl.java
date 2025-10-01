@@ -3,6 +3,7 @@ package my.sts.ya_practicum.my_blog.back_app.persistence.repository.impl;
 import my.sts.ya_practicum.my_blog.back_app.persistence.repository.PostRepository;
 import my.sts.ya_practicum.my_blog.back_app.persistence.model.Post;
 import my.sts.ya_practicum.my_blog.back_app.service.util.search.PostSearchCriteria;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -20,6 +21,7 @@ public class PostRepositoryImpl implements PostRepository {
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
+    @Autowired
     public PostRepositoryImpl(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;

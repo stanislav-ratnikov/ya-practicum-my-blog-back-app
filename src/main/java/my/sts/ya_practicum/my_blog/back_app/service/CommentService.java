@@ -1,21 +1,25 @@
 package my.sts.ya_practicum.my_blog.back_app.service;
 
-import my.sts.ya_practicum.my_blog.back_app.persistence.repository.CommentRepository;
-import my.sts.ya_practicum.my_blog.back_app.web.dto.CommentDto;
 import my.sts.ya_practicum.my_blog.back_app.persistence.model.Comment;
+import my.sts.ya_practicum.my_blog.back_app.persistence.repository.CommentRepository;
+import my.sts.ya_practicum.my_blog.back_app.service.exception.ResourceNotFoundException;
 import my.sts.ya_practicum.my_blog.back_app.service.util.mapper.CommentDtoMapper;
+import my.sts.ya_practicum.my_blog.back_app.web.dto.CommentDto;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class CommentService {
 
     private final CommentRepository commentRepository;
+    private final PostValidationService postValidationService;
 
-    public CommentService(CommentRepository commentRepository) {
+    @Autowired
+    public CommentService(CommentRepository commentRepository, PostValidationService postValidationService) {
+        this.postValidationService = postValidationService;
         this.commentRepository = commentRepository;
     }
 
@@ -24,23 +28,9 @@ public class CommentService {
             return Collections.emptyList();
         }
 
+        postValidationService.validateIsPostExists(postId);
+
         return CommentDtoMapper.map(commentRepository.findByPostId(postId));
-    }
-
-    public Map<Long, Long> getCommentsCountByPostId(List<Long> postIds) {
-        if (postIds == null || postIds.isEmpty()) {
-            return Collections.emptyMap();
-        }
-
-        return commentRepository.getCommentsCountByPostId(postIds);
-    }
-
-    public void deleteByPostId(Long postId) {
-        if (postId == null) {
-            return;
-        }
-
-        commentRepository.deleteByPostId(postId);
     }
 
     public CommentDto findComment(Long postId, Long commentId) {
@@ -48,10 +38,20 @@ public class CommentService {
             return null;
         }
 
-        return CommentDtoMapper.map(commentRepository.findByPostIdAndCommentId(postId, commentId));
+        postValidationService.validateIsPostExists(postId);
+
+        Comment comment = commentRepository.findByPostIdAndCommentId(postId, commentId);
+
+        if (comment == null) {
+            throw new ResourceNotFoundException();
+        }
+
+        return CommentDtoMapper.map(comment);
     }
 
     public CommentDto createComment(Long postId, CommentDto commentDto) {
+        postValidationService.validateIsPostExists(postId);
+
         Comment comment = new Comment();
 
         comment.setPostId(postId);
@@ -63,10 +63,12 @@ public class CommentService {
     }
 
     public CommentDto updateComment(Long postId, Long commentId, CommentDto commentDto) {
+        postValidationService.validateIsPostExists(postId);
+
         Comment comment = commentRepository.findByPostIdAndCommentId(postId, commentId);
 
         if (comment == null) {
-            return null;
+            throw new ResourceNotFoundException();
         }
 
         comment.setText(commentDto.getText());
@@ -77,6 +79,14 @@ public class CommentService {
     }
 
     public void deleteComment(Long postId, Long commentId) {
+        postValidationService.validateIsPostExists(postId);
+
+        Comment comment = commentRepository.findByPostIdAndCommentId(postId, commentId);
+
+        if (comment == null) {
+            throw new ResourceNotFoundException();
+        }
+
         commentRepository.delete(postId, commentId);
     }
 }

@@ -1,8 +1,8 @@
 package my.sts.ya_practicum.my_blog.back_app.web.controller;
 
-import my.sts.ya_practicum.my_blog.back_app.web.dto.CommentDto;
 import my.sts.ya_practicum.my_blog.back_app.service.CommentService;
-import my.sts.ya_practicum.my_blog.back_app.service.PostService;
+import my.sts.ya_practicum.my_blog.back_app.web.dto.CommentDto;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,38 +22,23 @@ import java.util.List;
 public class CommentController {
 
     private final CommentService commentService;
-    private final PostService postService;
 
-    public CommentController(CommentService commentService, PostService postService) {
+    @Autowired
+    public CommentController(CommentService commentService) {
         this.commentService = commentService;
-        this.postService = postService;
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<CommentDto>> getComments(@PathVariable("postId") Long postId) {
-        if (!postService.exists(postId)) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(commentService.findCommentsByPostId(postId));
+    public List<CommentDto> getComments(@PathVariable("postId") Long postId) {
+        return commentService.findCommentsByPostId(postId);
     }
 
     @GetMapping(value = "/{commentId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CommentDto> getComment(
+    public CommentDto getComment(
             @PathVariable("postId") Long postId,
             @PathVariable("commentId") Long commentId
     ) {
-        if (!postService.exists(postId)) {
-            return ResponseEntity.notFound().build();
-        }
-
-        CommentDto comment = commentService.findComment(postId, commentId);
-
-        if (comment == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(comment);
+        return commentService.findComment(postId, commentId);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -61,32 +46,18 @@ public class CommentController {
             @PathVariable("postId") Long postId,
             @RequestBody CommentDto commentDto
     ) {
-        if (!postService.exists(postId)) {
-            return ResponseEntity.notFound().build();
-        }
-
         CommentDto comment = commentService.createComment(postId, commentDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(comment);
     }
 
     @PutMapping(value = "/{commentId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CommentDto> updateComment(
+    public CommentDto updateComment(
             @PathVariable("postId") Long postId,
             @PathVariable("commentId") Long commentId,
             @RequestBody CommentDto commentDto
     ) {
-        if (!postService.exists(postId)) {
-            return ResponseEntity.notFound().build();
-        }
-
-        CommentDto comment = commentService.updateComment(postId, commentId, commentDto);
-
-        if (comment == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(comment);
+        return commentService.updateComment(postId, commentId, commentDto);
     }
 
     @DeleteMapping(value = "/{commentId}")
@@ -94,10 +65,6 @@ public class CommentController {
             @PathVariable("postId") Long postId,
             @PathVariable("commentId") Long commentId
     ) {
-        if (!postService.exists(postId)) {
-            return ResponseEntity.notFound().build();
-        }
-
         commentService.deleteComment(postId, commentId);
 
         return ResponseEntity.noContent().build();

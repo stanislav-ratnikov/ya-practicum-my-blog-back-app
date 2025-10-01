@@ -3,6 +3,7 @@ package my.sts.ya_practicum.my_blog.back_app.web.controller;
 import my.sts.ya_practicum.my_blog.back_app.web.dto.FindPostsResponseDto;
 import my.sts.ya_practicum.my_blog.back_app.web.dto.PostDto;
 import my.sts.ya_practicum.my_blog.back_app.service.PostService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ public class PostController {
 
     private final PostService postService;
 
+    @Autowired
     public PostController(PostService postService) {
         this.postService = postService;
     }
@@ -48,33 +50,19 @@ public class PostController {
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PostDto> updatePost(@PathVariable("id") Long postId, @RequestBody PostDto post) {
-        if (!postService.exists(postId)) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(postService.updatePost(postId, post));
+    public PostDto updatePost(@PathVariable("id") Long postId, @RequestBody PostDto post) {
+        return postService.updatePost(postId, post);
     }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> deletePost(@PathVariable("id") Long postId) {
-        if (!postService.exists(postId)) {
-            return ResponseEntity.notFound().build();
-        }
-
         postService.deletePost(postId);
 
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping(value = "/{id}/likes")
-    public ResponseEntity<Long> incrementLikes(@PathVariable("id") Long postId) {
-        if (!postService.exists(postId)) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Long likesCount = postService.incrementLikesCount(postId);
-
-        return ResponseEntity.ok(likesCount);
+    public Long incrementLikes(@PathVariable("id") Long postId) {
+        return postService.incrementLikesCount(postId);
     }
 }

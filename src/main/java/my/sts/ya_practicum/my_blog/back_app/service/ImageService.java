@@ -1,6 +1,8 @@
 package my.sts.ya_practicum.my_blog.back_app.service;
 
 import jakarta.servlet.ServletContext;
+import my.sts.ya_practicum.my_blog.back_app.service.exception.ResourceNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,18 +16,23 @@ public class ImageService {
 
     public static final String IMAGE_UPLOAD_DIRECTORY = "uploads/";
 
+    private final PostValidationService postValidationService;
     private final ServletContext servletContext;
 
-    public ImageService(ServletContext servletContext) {
+    @Autowired
+    public ImageService(PostValidationService postValidationService, ServletContext servletContext) {
+        this.postValidationService = postValidationService;
         this.servletContext = servletContext;
     }
 
     public byte[] getImage(Long postId) {
+        postValidationService.validateIsPostExists(postId);
+
         try {
             Path filePath = Paths.get(servletContext.getRealPath(IMAGE_UPLOAD_DIRECTORY)).resolve(postId.toString()).normalize();
 
             if (!filePath.toFile().exists()) {
-                return null;
+                throw new ResourceNotFoundException();
             }
 
             return Files.readAllBytes(filePath);
@@ -35,6 +42,8 @@ public class ImageService {
     }
 
     public void uploadImage(Long postId, MultipartFile file) {
+        postValidationService.validateIsPostExists(postId);
+
         try {
             Path uploadDir = Paths.get(servletContext.getRealPath(IMAGE_UPLOAD_DIRECTORY));
 
