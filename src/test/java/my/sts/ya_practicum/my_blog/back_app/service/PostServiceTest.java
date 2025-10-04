@@ -3,7 +3,7 @@ package my.sts.ya_practicum.my_blog.back_app.service;
 import my.sts.ya_practicum.my_blog.back_app.persistence.model.Post;
 import my.sts.ya_practicum.my_blog.back_app.persistence.repository.CommentRepository;
 import my.sts.ya_practicum.my_blog.back_app.persistence.repository.PostRepository;
-import my.sts.ya_practicum.my_blog.back_app.service.util.mapper.PostDtoMapper;
+import my.sts.ya_practicum.my_blog.back_app.service.mapper.PostDtoMapper;
 import my.sts.ya_practicum.my_blog.back_app.web.dto.FindPostsResponseDto;
 import my.sts.ya_practicum.my_blog.back_app.web.dto.PostDto;
 import org.junit.jupiter.api.Test;

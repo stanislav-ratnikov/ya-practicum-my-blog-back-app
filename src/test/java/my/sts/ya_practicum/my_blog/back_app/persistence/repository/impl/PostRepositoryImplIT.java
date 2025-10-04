@@ -3,7 +3,7 @@ package my.sts.ya_practicum.my_blog.back_app.persistence.repository.impl;
 import my.sts.ya_practicum.my_blog.back_app.config.DataSourceConfig;
 import my.sts.ya_practicum.my_blog.back_app.persistence.repository.PostRepository;
 import my.sts.ya_practicum.my_blog.back_app.persistence.model.Post;
-import my.sts.ya_practicum.my_blog.back_app.service.util.search.PostSearchCriteria;
+import my.sts.ya_practicum.my_blog.back_app.service.search.PostSearchCriteria;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

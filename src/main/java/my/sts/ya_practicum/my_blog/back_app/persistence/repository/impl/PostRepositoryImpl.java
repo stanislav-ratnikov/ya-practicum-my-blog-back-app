@@ -2,7 +2,7 @@ package my.sts.ya_practicum.my_blog.back_app.persistence.repository.impl;
 
 import my.sts.ya_practicum.my_blog.back_app.persistence.repository.PostRepository;
 import my.sts.ya_practicum.my_blog.back_app.persistence.model.Post;
-import my.sts.ya_practicum.my_blog.back_app.service.util.search.PostSearchCriteria;
+import my.sts.ya_practicum.my_blog.back_app.service.search.PostSearchCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;

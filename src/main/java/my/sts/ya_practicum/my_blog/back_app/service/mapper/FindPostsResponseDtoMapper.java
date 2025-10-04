@@ -1,4 +1,4 @@
-package my.sts.ya_practicum.my_blog.back_app.service.util.mapper;
+package my.sts.ya_practicum.my_blog.back_app.service.mapper;
 
 import my.sts.ya_practicum.my_blog.back_app.web.dto.FindPostsResponseDto;
 import my.sts.ya_practicum.my_blog.back_app.web.dto.PostDto;

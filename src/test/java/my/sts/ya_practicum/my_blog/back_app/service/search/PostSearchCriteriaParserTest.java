@@ -1,4 +1,4 @@
-package my.sts.ya_practicum.my_blog.back_app.service.util.search;
+package my.sts.ya_practicum.my_blog.back_app.service.search;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

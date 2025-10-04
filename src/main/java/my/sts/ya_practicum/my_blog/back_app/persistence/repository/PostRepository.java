@@ -1,7 +1,7 @@
 package my.sts.ya_practicum.my_blog.back_app.persistence.repository;
 
 import my.sts.ya_practicum.my_blog.back_app.persistence.model.Post;
-import my.sts.ya_practicum.my_blog.back_app.service.util.search.PostSearchCriteria;
+import my.sts.ya_practicum.my_blog.back_app.service.search.PostSearchCriteria;
 
 import java.util.List;
 

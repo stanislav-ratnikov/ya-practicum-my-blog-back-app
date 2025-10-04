@@ -3,7 +3,7 @@ package my.sts.ya_practicum.my_blog.back_app.service;
 import my.sts.ya_practicum.my_blog.back_app.persistence.model.Comment;
 import my.sts.ya_practicum.my_blog.back_app.persistence.repository.CommentRepository;
 import my.sts.ya_practicum.my_blog.back_app.service.exception.ResourceNotFoundException;
-import my.sts.ya_practicum.my_blog.back_app.service.util.mapper.CommentDtoMapper;
+import my.sts.ya_practicum.my_blog.back_app.service.mapper.CommentDtoMapper;
 import my.sts.ya_practicum.my_blog.back_app.web.dto.CommentDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
