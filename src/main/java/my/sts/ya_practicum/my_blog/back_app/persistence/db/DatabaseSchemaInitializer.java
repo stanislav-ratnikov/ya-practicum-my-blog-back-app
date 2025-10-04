@@ -1,4 +1,4 @@
-package my.sts.ya_practicum.my_blog.back_app.persistence.util.db;
+package my.sts.ya_practicum.my_blog.back_app.persistence.db;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

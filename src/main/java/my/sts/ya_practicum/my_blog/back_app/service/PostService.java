@@ -1,23 +1,21 @@
 package my.sts.ya_practicum.my_blog.back_app.service;
 
+import my.sts.ya_practicum.my_blog.back_app.persistence.model.Post;
 import my.sts.ya_practicum.my_blog.back_app.persistence.repository.CommentRepository;
 import my.sts.ya_practicum.my_blog.back_app.persistence.repository.PostRepository;
-import my.sts.ya_practicum.my_blog.back_app.service.exception.InvalidRequestException;
 import my.sts.ya_practicum.my_blog.back_app.service.exception.ResourceNotFoundException;
-import my.sts.ya_practicum.my_blog.back_app.web.dto.FindPostsResponseDto;
-import my.sts.ya_practicum.my_blog.back_app.web.dto.PostDto;
-import my.sts.ya_practicum.my_blog.back_app.persistence.model.Post;
 import my.sts.ya_practicum.my_blog.back_app.service.util.mapper.FindPostsResponseDtoMapper;
 import my.sts.ya_practicum.my_blog.back_app.service.util.mapper.PostDtoMapper;
 import my.sts.ya_practicum.my_blog.back_app.service.util.search.PostSearchCriteria;
 import my.sts.ya_practicum.my_blog.back_app.service.util.search.PostSearchCriteriaParser;
+import my.sts.ya_practicum.my_blog.back_app.web.dto.FindPostsResponseDto;
+import my.sts.ya_practicum.my_blog.back_app.web.dto.PostDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @Service
 public class PostService {
@@ -83,10 +81,6 @@ public class PostService {
     }
 
     public PostDto updatePost(Long postId, PostDto postDto) {
-        if (!Objects.equals(postId, postDto.getId())) {
-            throw new InvalidRequestException();
-        }
-
         postValidationService.validateIsPostExists(postId);
         postRepository.update(PostDtoMapper.map(postDto));
 

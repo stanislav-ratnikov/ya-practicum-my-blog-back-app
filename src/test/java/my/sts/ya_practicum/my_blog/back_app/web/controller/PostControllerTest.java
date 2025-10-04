@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import my.sts.ya_practicum.my_blog.back_app.service.PostService;
 import my.sts.ya_practicum.my_blog.back_app.web.dto.FindPostsResponseDto;
 import my.sts.ya_practicum.my_blog.back_app.web.dto.PostDto;
+import my.sts.ya_practicum.my_blog.back_app.web.validation.PostRequestValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,6 +31,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class PostControllerTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    @Mock
+    private PostRequestValidator postRequestValidator;
 
     @Mock
     private PostService postService;

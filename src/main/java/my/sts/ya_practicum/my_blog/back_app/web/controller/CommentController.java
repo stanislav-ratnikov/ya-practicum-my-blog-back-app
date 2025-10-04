@@ -1,9 +1,12 @@
 package my.sts.ya_practicum.my_blog.back_app.web.controller;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.groups.Default;
 import my.sts.ya_practicum.my_blog.back_app.service.CommentService;
 import my.sts.ya_practicum.my_blog.back_app.web.dto.CommentDto;
-import my.sts.ya_practicum.my_blog.back_app.web.validation.Create;
-import my.sts.ya_practicum.my_blog.back_app.web.validation.Update;
+import my.sts.ya_practicum.my_blog.back_app.web.validation.CommentRequestValidator;
+import my.sts.ya_practicum.my_blog.back_app.web.validation.group.Create;
+import my.sts.ya_practicum.my_blog.back_app.web.validation.group.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,13 +25,16 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/posts/{postId}/comments")
+@Validated
 public class CommentController {
 
     private final CommentService commentService;
+    private final CommentRequestValidator commentRequestValidator;
 
     @Autowired
-    public CommentController(CommentService commentService) {
+    public CommentController(CommentService commentService, CommentRequestValidator commentRequestValidator) {
         this.commentService = commentService;
+        this.commentRequestValidator = commentRequestValidator;
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -38,7 +44,7 @@ public class CommentController {
 
     @GetMapping(value = "/{commentId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public CommentDto getComment(
-            @PathVariable("postId") Long postId,
+            @PathVariable("postId") @NotNull Long postId,
             @PathVariable("commentId") Long commentId
     ) {
         return commentService.findComment(postId, commentId);
@@ -47,8 +53,10 @@ public class CommentController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommentDto> createComment(
             @PathVariable("postId") Long postId,
-            @RequestBody @Validated(Create.class) CommentDto commentDto
+            @RequestBody @Validated({Default.class, Create.class}) CommentDto commentDto
     ) {
+        commentRequestValidator.validate(postId, commentDto);
+
         CommentDto comment = commentService.createComment(postId, commentDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(comment);
@@ -58,8 +66,10 @@ public class CommentController {
     public CommentDto updateComment(
             @PathVariable("postId") Long postId,
             @PathVariable("commentId") Long commentId,
-            @RequestBody @Validated(Update.class) CommentDto commentDto
+            @RequestBody @Validated({Default.class, Update.class}) CommentDto commentDto
     ) {
+        commentRequestValidator.validate(postId, commentId, commentDto);
+
         return commentService.updateComment(postId, commentId, commentDto);
     }
 

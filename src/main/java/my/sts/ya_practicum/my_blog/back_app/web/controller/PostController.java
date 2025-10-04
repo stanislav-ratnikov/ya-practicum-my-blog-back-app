@@ -1,10 +1,12 @@
 package my.sts.ya_practicum.my_blog.back_app.web.controller;
 
+import jakarta.validation.groups.Default;
 import my.sts.ya_practicum.my_blog.back_app.service.PostService;
 import my.sts.ya_practicum.my_blog.back_app.web.dto.FindPostsResponseDto;
 import my.sts.ya_practicum.my_blog.back_app.web.dto.PostDto;
-import my.sts.ya_practicum.my_blog.back_app.web.validation.Create;
-import my.sts.ya_practicum.my_blog.back_app.web.validation.Update;
+import my.sts.ya_practicum.my_blog.back_app.web.validation.PostRequestValidator;
+import my.sts.ya_practicum.my_blog.back_app.web.validation.group.Create;
+import my.sts.ya_practicum.my_blog.back_app.web.validation.group.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,13 +24,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/posts")
+@Validated
 public class PostController {
 
     private final PostService postService;
+    private final PostRequestValidator postRequestValidator;
 
     @Autowired
-    public PostController(PostService postService) {
+    public PostController(PostService postService, PostRequestValidator postRequestValidator) {
         this.postService = postService;
+        this.postRequestValidator = postRequestValidator;
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -46,7 +51,7 @@ public class PostController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PostDto> createPost(@RequestBody @Validated(Create.class) PostDto post) {
+    public ResponseEntity<PostDto> createPost(@RequestBody @Validated({Default.class, Create.class}) PostDto post) {
         PostDto result = postService.createPost(post);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
@@ -55,8 +60,10 @@ public class PostController {
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public PostDto updatePost(
             @PathVariable("id") Long postId,
-            @RequestBody @Validated(Update.class) PostDto post
+            @RequestBody @Validated({Default.class, Update.class}) PostDto post
     ) {
+        postRequestValidator.validate(postId, post);
+
         return postService.updatePost(postId, post);
     }
 
